@@ -9,6 +9,7 @@ function Header() {
             <div className="relative flex items-center h-10 cursor-pointer my-auto">
                 <Image
                     src={Logo}
+                    alt="AdoptUs"
                     fill
                     className="object-contain object-left"
                 />
