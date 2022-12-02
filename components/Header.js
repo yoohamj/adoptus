@@ -1,13 +1,14 @@
 import Image from "next/image";
+import Logo from "../images/logo.svg"
 import { GlobeAltIcon, Bars3Icon, UserCircleIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 
 function Header() {
     return (
         <header className="sticky top-0 z-50 grid grid-cols-3 bg-white shadow-md p-5 md:px-10">
             {/* left */}
-            <div onClick={() => router.push("/")} className="relative flex items-center h-10 cursor-pointer my-auto">
+            <div className="relative flex items-center h-10 cursor-pointer my-auto">
                 <Image
-                    src="https://links.papareact.com/qd3"
+                    src={Logo}
                     fill
                     className="object-contain object-left"
                 />
