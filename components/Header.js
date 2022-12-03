@@ -1,19 +1,6 @@
 import Image from "next/image";
 import Logo from "../images/logo.svg"
 import { GlobeAltIcon, Bars3Icon, UserCircleIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
-<<<<<<< HEAD
-import { useRouter } from "next/dist/client/router"
-
-function Header() {
-    const router = useRouter();
-
-    return (
-        <header className="sticky top-0 z-50 grid grid-cols-3 bg-white shadow-md p-5 md:px-10">
-            {/* left */}
-            <div 
-            onClick={() => router.push("/")}  
-            className="relative flex items-center h-10 cursor-pointer my-auto">
-=======
 import { useRouter } from "next/dist/client/router";
 import { useState } from "react";
 
@@ -34,7 +21,6 @@ function Header() {
         <header className="sticky top-0 z-50 grid grid-cols-3 bg-white shadow-md p-5 md:px-10">
             {/* left */}
             <div onClick={() => router.push("/")} className="relative flex items-center h-10 cursor-pointer my-auto">
->>>>>>> temp-branch
                 <Image
                     src={Logo}
                     alt="AdoptUs"
