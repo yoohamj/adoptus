@@ -1,11 +1,21 @@
 import Image from "next/image";
+<<<<<<< HEAD
 import { useRouter } from "next/dist/client/router"
+=======
+import { useRouter } from "next/dist/client/router";
+>>>>>>> temp-branch
 
 function Banner() {
     const router = useRouter();
     const search = () => {
+<<<<<<< HEAD
         router.push('/search');
     }; 
+=======
+        router.push({
+        })
+    }
+>>>>>>> temp-branch
 
     return (
         
