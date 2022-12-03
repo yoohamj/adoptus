@@ -53,7 +53,7 @@ function Header() {
             <div className="flex items-center space-x-4 justify-end text-gray-500">
                 <p className="hidden md:inline cursor-pointer">Become a host</p>
                 <GlobeAltIcon className="h-6 cursor-pointer" />
-                <div className="flex items-center space-x-2 border-2 p-2 rounded-full">
+                <div className="flex items-center space-x-2 border-2 p-2 rounded-full hover:shadow-xl active:scale-90 transition duration-150">
                     <Menu as="div" className="relative inline-block text-left">
                         <Menu.Button className="inline-block ">
                             <Bars3Icon className="h-6 inline-block" />
@@ -107,7 +107,7 @@ function Header() {
                                             'block px-4 py-2 text-sm'
                                         )}
                                         >
-                                        Archive
+                                        Setting
                                         </a>
                                     )}
                                     </Menu.Item>
@@ -120,7 +120,7 @@ function Header() {
                                             'block px-4 py-2 text-sm'
                                         )}
                                         >
-                                        Move
+                                        Help
                                         </a>
                                     )}
                                     </Menu.Item>
