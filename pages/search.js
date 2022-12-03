@@ -7,6 +7,9 @@ import InfoCard from "../components/InfoCard";
 function Search({ searchResults }) {
     const router = useRouter();
 
+    //ES6 Destructuring
+    const { location } = router.query;
+
     return (
         <div className="">
             <Header />
@@ -16,7 +19,7 @@ function Search({ searchResults }) {
                         300+ Stays guests
                     </p>
                     <h1 className="text-3xl font-semibold mt-2 mb-6">
-                        Stays in Toronto
+                        Stays in {location}
                     </h1>
 
                     <div className="hidden lg:inline-flex mb-5 space-x-3 text-gray-800 whitespace-nowrap">
