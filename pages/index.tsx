@@ -9,7 +9,7 @@ import { Amplify, Auth, Hub } from 'aws-amplify';
 import { CognitoHostedUIIdentityProvider } from '@aws-amplify/auth';
 import awsconfig from '../aws-exports' 
 
-Amplify.configure(awsconfig);
+Amplify.configure( {...awsconfig, ssr: true} );
 
 export default function Home({}) {
   return (
