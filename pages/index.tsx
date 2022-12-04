@@ -3,6 +3,11 @@ import Header from '../components/Header'
 import Banner from '../components/Banner'
 import Footer from '../components/Footer'
 
+import Amplify from 'aws-amplify'
+import awsconfig from '../src/aws-exports'
+
+Amplify.configure(awsconfig);
+
 export default function Home({}) {
   return (
     <div className="">
