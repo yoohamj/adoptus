@@ -4,6 +4,10 @@ import 'tailwindcss/tailwind.css';
 import ProgressBar from "@badrap/bar-of-progress";
 import Router from "next/router";
 
+import { Amplify, Auth, Hub } from 'aws-amplify';
+import awsconfig from '../aws-exports' 
+Amplify.configure({ ...awsconfig, ssr: true });
+
 const progress = new ProgressBar({
   size: 4,
   color: "#FE595E",
