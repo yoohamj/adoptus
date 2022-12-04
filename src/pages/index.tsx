@@ -7,7 +7,7 @@ import Footer from '../components/Footer'
 import React, { useEffect, useState } from 'react';
 import { Amplify, Auth, Hub } from 'aws-amplify';
 import { CognitoHostedUIIdentityProvider } from '@aws-amplify/auth';
-import awsconfig from '../aws-exports'
+import awsconfig from './aws-exports' 
 
 Amplify.configure(awsconfig);
 
