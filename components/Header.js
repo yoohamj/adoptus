@@ -7,11 +7,18 @@ import { Menu, Transition } from '@headlessui/react'
 import { useRouter } from "next/dist/client/router";
 import { useState, Fragment } from "react";
 
+import { Amplify, Auth, Hub } from 'aws-amplify';
+
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
   }
 
 function Header() {
+    async function checkuser() {
+        const user = await Auth.currentAuthenticatedUser()
+        console.log('user: ', user)
+    }
+
     const [searchInput, setSearchInput] = useState("");
     const router = useRouter();
 
@@ -70,13 +77,14 @@ function Header() {
                         >
                             <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                                 <div className="py-1">
-                                    <Menu.Item>
+                                    <Menu.Item
+                                    onClick = {() => Auth.federatedSignIn()}>
                                     {({ active }) => (
                                         <a
                                         href="#"
                                         className={classNames(
                                             active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'block px-4 py-2 text-sm'
+                                            'block px-4 py-2 text-sm font-bold'
                                         )}
                                         >
                                         Sign Up

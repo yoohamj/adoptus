@@ -3,7 +3,9 @@ import Header from '../components/Header'
 import Banner from '../components/Banner'
 import Footer from '../components/Footer'
 
-import Amplify from 'aws-amplify'
+import React, { useEffect, useState } from 'react';
+import { Amplify, Auth, Hub } from 'aws-amplify';
+import { CognitoHostedUIIdentityProvider } from '@aws-amplify/auth';
 import awsconfig from '../src/aws-exports'
 
 Amplify.configure(awsconfig);
