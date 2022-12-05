@@ -6,7 +6,9 @@ import { GlobeAltIcon, Bars3Icon, UserCircleIcon, MagnifyingGlassIcon } from '@h
 import { Menu, Transition } from '@headlessui/react'
 
 import { useRouter } from "next/dist/client/router";
-import { useState, Fragment } from "react";
+import { useState, useEffect, Fragment } from "react";
+
+import SignIn from "./SignIn"
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')

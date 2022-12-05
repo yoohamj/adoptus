@@ -62,7 +62,6 @@
     "adminQueries": false,
     "thirdPartyAuth": false,
     "authProviders": [],
-    "hostedUIProviderCreds": "[]",
-    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost:3000/\",\"https://adoptusd461506d-d461506d-staging.auth.us-east-1.amazoncognito.com/oauth2/idpresponse/\"],\"LogoutURLs\":[\"http://localhost:3000/\",\"https://www.adoptus.ca/\"]}"
+    "oAuthMetadata": "{\"AllowedOAuthFlows\":[\"code\"],\"AllowedOAuthScopes\":[\"phone\",\"email\",\"openid\",\"profile\",\"aws.cognito.signin.user.admin\"],\"CallbackURLs\":[\"http://localhost:3000/\",\"https://www.adoptus.ca/\"],\"LogoutURLs\":[\"http://localhost:3000/\",\"https://www.adoptus.ca/\"]}"
   }
 }
