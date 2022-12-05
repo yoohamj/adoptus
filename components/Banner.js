@@ -13,8 +13,8 @@ function Banner() {
             <Image
                 src="https://links.papareact.com/0fm"
                 alt = "banner background"
-                layout="fill"
-                objectFit="cover"
+                fill
+                className="object-contain object-left"
             />
             <div className="absolute top-1/2 w-full text-center">
                 <p className="text-sm sm:text-lg">

@@ -1,7 +1,7 @@
 import Head from 'next/head'
-
-import Banner from '../components/Banner'
 import Header from '../components/Header'
+import Banner from '../components/Banner'
+import Pets from '../components/Pets'
 import Footer from '../components/Footer'
 
 import React, { useEffect, useState } from 'react';
@@ -20,7 +20,9 @@ export default function Home({}) {
       </Head>
 
       <Header />
-      <Banner />
+      <div className="sm:mx-6 md:mx-10 lg:mx-12 px-3">
+        <Pets />
+      </div>
       <Footer />
     </div>
   )
