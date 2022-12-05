@@ -16,7 +16,7 @@ const Pets = () => {
     { name: "Jodie", image: house4, price: "500" },
     { name: "Suzette", image: house5, price: "700" },
     { name: "Hollyhock", image: house1, price: "0" },
-    { name: "HoracioA", image: house2, price: "200" },
+    { name: "Horacio", image: house2, price: "200" },
     { name: "Jean-Luc", image: house3, price: "300" },
     { name: "Jodie", image: house4, price: "500" },
     { name: "Suzette", image: house5, price: "700" },

@@ -3,11 +3,7 @@ import type { AppProps } from 'next/app'
 import 'tailwindcss/tailwind.css';
 import ProgressBar from "@badrap/bar-of-progress";
 import Router from "next/router";
-
-import { Amplify, Auth, Hub } from 'aws-amplify';
-import '@aws-amplify/ui-react/styles.css';
-import awsconfig from '../aws-exports' 
-Amplify.configure({ ...awsconfig, ssr: true });
+import Link from 'next/link'
 
 const progress = new ProgressBar({
   size: 4,
