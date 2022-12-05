@@ -10,8 +10,8 @@ import Pet from "./Pet";
 
 const Pets = () => {
   const pets = [
-    { name: "Hollyhock", image: koyax, price: "9999" },
-    { name: "Horacio", image: kaymak, price: "9999" },
+    { name: "Koyax", image: koyax, price: "9999" },
+    { name: "Kaymak", image: kaymak, price: "9999" },
     { name: "Jean-Luc", image: house3, price: "300" },
     { name: "Jodie", image: house4, price: "500" },
     { name: "Suzette", image: house5, price: "700" },
