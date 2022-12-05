@@ -20,9 +20,14 @@ export default function Home({}) {
       </Head>
 
       <Header />
-      <div className="sm:mx-6 md:mx-10 lg:mx-12 px-3">
-        <Pets />
-      </div>
+      <Banner />
+      <section>
+        <h2 className='text-4xl font-semibold p-5'>Pets Recently Added</h2>
+        <div className="sm:mx-6 md:mx-10 lg:mx-12 px-3">
+          <Pets />
+        </div>
+      </section>
+      
       <Footer />
     </div>
   )
