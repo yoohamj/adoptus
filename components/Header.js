@@ -1,17 +1,12 @@
 import Image from "next/image";
 import Logo from "../images/logo.svg"
+import Link from 'next/link'
 
 import { GlobeAltIcon, Bars3Icon, UserCircleIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 import { Menu, Transition } from '@headlessui/react'
 
 import { useRouter } from "next/dist/client/router";
 import { useState, Fragment } from "react";
-
-import { Amplify, Auth, Hub } from 'aws-amplify';
-import '@aws-amplify/ui-react/styles.css';
-import awsConfig from '../aws-exports' 
-
-Amplify.configure({ ...awsConfig, ssr: true });
 
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -83,15 +78,12 @@ function Header() {
                                 <div className="py-1">
                                     <Menu.Item>
                                     {({ active }) => (
-                                        <a
-                                        href="/profile"
-                                        className={classNames(
+                                        <Link href="/profile" className={classNames(
                                             active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                             'block px-4 py-2 text-sm font-bold'
-                                        )}
-                                        >
+                                        )}>
                                         Sign Up
-                                        </a>
+                                        </Link>
                                     )}
                                     </Menu.Item>
                                     <Menu.Item>
