@@ -1,24 +1,72 @@
+import '../configureAmplify'
+import { Auth } from 'aws-amplify'
+
 import Image from "next/image";
 import Logo from "../images/logo.svg"
-import Link from 'next/link'
+import SIDropDown from './SIDropDown'
+import SODropDown from './SODropDown'
 
-import { GlobeAltIcon, Bars3Icon, UserCircleIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
-import { Menu, Transition } from '@headlessui/react'
+
+import { GlobeAltIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 
 import { useRouter } from "next/dist/client/router";
-import { useState, useEffect, Fragment } from "react";
-
-import SignIn from "./SignIn"
-
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-  }
+import { useState, useEffect } from "react";
 
 function Header() {
-    async function checkuser() {
-        const user = await Auth.currentAuthenticatedUser()
-        console.log('user: ', user)
-    }
+    const [uiState, setUiState] = useState(null)
+    
+    const [formState, setFormState] = useState({
+        email: '', password: '', authcode: ''
+    })
+    const { email, password, authcode } = formState
+
+    const [user, setUser] = useState(null)
+
+    useEffect(() => {
+        checkUser()
+        async function checkUser() {
+            try {
+                const user = await Auth.currentAuthenticatedUser()
+                setUser(user)
+                setUiState('signedIn')
+            } catch(err) {
+                setUiState('signedOut')
+            }
+        }
+    }, [])
+      function onChange(e) {
+        setFormState({ ...formState, [e.target.name]: e.target.value })
+      }
+      async function signUp() {
+        try {
+          await Auth.signUp({ username: email, password, attributes: { email }})
+          setUiState('confirmSignUp')
+        } catch (err) { console.log({ err })}
+      }
+      async function confirmSignUp() {
+        try {
+          await await Auth.confirmSignUp(email, authCode)
+          await Auth.signIn(email, password)
+          setUiState('signedIn')
+        } catch (err) { console.log({ err })}
+    
+      }
+      async function signIn() {
+        try {
+          await Auth.signIn(email, password)
+          setUiState('signedIn')
+        } catch (err) { console.log({ err })}
+      }
+      async function forgotPassword() {
+        try {
+          await Auth.forgotPassword(email)
+          setUiState('forgotPasswordSubmit')
+        } catch (err) { console.log({ err}) }
+      }
+      async function forgotPasswordSubmit() {
+        await Auth.forgotPasswordSubmit(email, authCode, password)
+        setUiState('signIn')
+      }
 
     const [searchInput, setSearchInput] = useState("");
     const router = useRouter();
@@ -31,6 +79,12 @@ function Header() {
             }
         })
     }
+
+    function onChange(e) {
+        setFormState({ ...formState, [e.target.name]: e.target.value })
+    }
+
+    console.log({ uiState })
 
     return (
         <header className="sticky top-0 z-50 grid grid-cols-3 bg-white shadow-md p-5 md:px-10">
@@ -62,77 +116,22 @@ function Header() {
                 <p className="hidden md:inline cursor-pointer">Become a host</p>
                 <GlobeAltIcon className="h-6 cursor-pointer" />
                 <div className="flex items-center space-x-2 border-2 p-2 rounded-full hover:shadow-xl active:scale-90 transition duration-150">
-                    <Menu as="div" className="relative inline-block text-left">
-                        <Menu.Button className="inline-block ">
-                            <Bars3Icon className="h-6 inline-block" />
-                            <UserCircleIcon className="h-6 inline-block" />
-                        </Menu.Button>
-                        <Transition
-                            as={Fragment}
-                            enter="transition ease-out duration-100"
-                            enterFrom="transform opacity-0 scale-95"
-                            enterTo="transform opacity-100 scale-100"
-                            leave="transition ease-in duration-75"
-                            leaveFrom="transform opacity-100 scale-100"
-                            leaveTo="transform opacity-0 scale-95"
-                        >
-                            <Menu.Items className="absolute right-0 z-10 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                <div className="py-1">
-                                    <Menu.Item>
-                                    {({ active }) => (
-                                        <Link href="/profile" className={classNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'block px-4 py-2 text-sm font-bold'
-                                        )}>
-                                        Sign Up
-                                        </Link>
-                                    )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                    {({ active }) => (
-                                        <a
-                                        href="#"
-                                        className={classNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'block px-4 py-2 text-sm'
-                                        )}
-                                        >
-                                        Log In
-                                        </a>
-                                    )}
-                                    </Menu.Item>
-                                </div>
-                                <div className="py-1">
-                                    <Menu.Item>
-                                    {({ active }) => (
-                                        <a
-                                        href="#"
-                                        className={classNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'block px-4 py-2 text-sm'
-                                        )}
-                                        >
-                                        Setting
-                                        </a>
-                                    )}
-                                    </Menu.Item>
-                                    <Menu.Item>
-                                    {({ active }) => (
-                                        <a
-                                        href="#"
-                                        className={classNames(
-                                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                            'block px-4 py-2 text-sm'
-                                        )}
-                                        >
-                                        Help
-                                        </a>
-                                    )}
-                                    </Menu.Item>
-                                </div>
-                                </Menu.Items>
-                            </Transition>
-                         </Menu>
+                    {
+                        uiState === 'signedOut' && (
+                            <SODropDown 
+                                onChange={onChange}
+                                setUiState={setUiState}
+                            />
+                        )
+                    }
+                    {
+                        uiState === 'signedIn' && (
+                            <SIDropDown 
+                                setUiState={setUiState}
+                                onChange={onChange}
+                            />
+                        )
+                    }
                 </div>
             </div>
 
