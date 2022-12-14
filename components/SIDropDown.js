@@ -3,7 +3,7 @@ import { Auth } from 'aws-amplify'
 
 import React from 'react'
 import { Menu, Transition } from '@headlessui/react'
-import { GlobeAltIcon, Bars3Icon, UserCircleIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
+import { Bars3Icon, UserCircleIcon } from '@heroicons/react/24/solid'
 import { useState, useEffect, Fragment } from "react";
 import Link from 'next/link'
 
@@ -49,6 +49,31 @@ function SIDropDown({ setUiState }) {
                                 )}
                          >
                             WishList
+                        </a>
+                        )}
+                </Menu.Item>
+            </div>
+            <div className="py-1">
+                <Menu.Item>
+                {({ active }) => (
+                    <Link 
+                        href="/profile" 
+                        className={classNames(
+                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm '
+                        )}>
+                        Manage Listings
+                    </Link>
+                    )}
+                </Menu.Item>
+                <Menu.Item>
+                    {({ active }) => (
+                        <a
+                            href="/register"
+                            className={classNames(
+                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm '
+                                )}
+                         >
+                            Register Your Pet
                         </a>
                         )}
                 </Menu.Item>

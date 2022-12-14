@@ -4,14 +4,23 @@
     "apiName": "adoptus",
     "serviceName": "AppSync",
     "defaultAuthType": {
-      "mode": "API_KEY",
-      "expirationTime": 7
+      "mode": "AMAZON_COGNITO_USER_POOLS",
+      "cognitoUserPoolId": "authadoptusd461506d"
     },
     "additionalAuthTypes": [
       {
-        "mode": "AMAZON_COGNITO_USER_POOLS",
-        "cognitoUserPoolId": "authadoptusd461506d"
+        "mode": "AWS_IAM"
+      },
+      {
+        "mode": "API_KEY",
+        "keyDescription": "api key description",
+        "expirationTime": 30
       }
-    ]
+    ],
+    "conflictResolution": {
+      "defaultResolutionStrategy": {
+        "type": "NONE"
+      }
+    }
   }
 }

@@ -4,6 +4,7 @@ import 'tailwindcss/tailwind.css';
 import ProgressBar from "@badrap/bar-of-progress";
 import Router from "next/router";
 import Link from 'next/link'
+import { useEffect } from 'react';
 
 const progress = new ProgressBar({
   size: 4,
@@ -16,6 +17,17 @@ Router.events.on('routeChangeStart', progress.start);
 Router.events.on('routeChangeComplete', progress.finish);
 Router.events.on('routeChangeError', progress.finish);
 
-export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />
-}
+function App({ Component, pageProps }: AppProps) {
+
+
+  useEffect(() => {
+  const use = async () => {
+    (await require('tw-elements')).default;
+      };
+      use();
+    }, []);
+  
+    return <Component {...pageProps} />;
+  }
+  
+  export default App;
