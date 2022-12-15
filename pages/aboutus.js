@@ -7,7 +7,7 @@ function AboutUs() {
         <Header/>
         <div class="container my-24 px-6 mx-auto">
         <section class="mb-32 text-gray-800 text-center">
-            <h2 class="text-3xl font-bold mb-12">Meet the <u class="text-blue-600">team</u></h2>
+            <h2 class="text-3xl font-bold mb-12">Meet the <u class="text-blue-600">Team</u></h2>
 
             <div class="grid md:grid-cols-3 gap-x-6 lg:gap-x-12">
             <div class="mb-6 lg:mb-0">
