@@ -8,7 +8,7 @@ function SignIn({
   return (
     <body className="antialiased bg-slate-100">
         <div className="max-w-lg mx-auto my-10 bg-white p-8 rounded-xl shadow shadow-slate-300">
-            <h1 className="text-4xl font-medium">Login</h1>
+            <h1 className="text-4xl font-medium">Login or Sign Up</h1>
             <p className="text-slate-500">Hi, Welcome back 👋</p>
 
             <div className="my-5">

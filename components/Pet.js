@@ -4,15 +4,15 @@ import Image from "next/image";
 
 const Pet = ({ name, image, price }) => {
   return (
-    <div className="">
+    <div className="hover:scale-110 transition duration-300 ease-in-out">
       <div className="relative">
         <div className="grad absolute w-full h-full rounded-b-[1.3rem]"></div>
-        <div className="flex  ">
+        <div className="flex">
           {/* Background */}
           <Image
             src={image}
             alt=""
-            className="object-cover rounded-[1.3rem] sm:h-[17rem]  md:h-[13rem] w-full"
+            className="object-cover rounded-[1.3rem] sm:h-[17rem]  md:h-[17rem] w-full"
           />
         </div>
       </div>

@@ -4,13 +4,13 @@ import house2 from "../images/Horacio.jpeg";
 import house3 from "../images/Jean-Luc.jpeg";
 import house4 from "../images/Jodie.jpeg";
 import house5 from "../images/Suzette.jpeg";
-import koyax from "../images/koyax.jpg";
+import babykaymak from "../images/babykaymak.jpg";
 import kaymak from "../images/kaymak.jpg";
 import Pet from "./Pet";
 
 const Pets = () => {
   const pets = [
-    { name: "Koyax", image: koyax, price: "9999" },
+    { name: "BabyKaymak", image: babykaymak, price: "9999" },
     { name: "Kaymak", image: kaymak, price: "9999" },
     { name: "Jean-Luc", image: house3, price: "300" },
     { name: "Jodie", image: house4, price: "500" },
@@ -23,7 +23,7 @@ const Pets = () => {
   ];
   return (
     <div className="py-3 sm:py-5">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
         {pets.map((pet) => (
           <Pet
             key={pet.image}
