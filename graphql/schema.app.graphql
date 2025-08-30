@@ -1,24 +1,8 @@
 """
-Secure schema: Cognito-only. No public/apiKey access.
-Owners manage their own data; admins can read all.
+Suggested GraphQL schema for Amplify AppSync.
+Add these types via `amplify update api` -> edit schema, then `amplify push`.
+Includes owner-based access and an admin group for read access.
 """
-
-type Post @model @auth(rules: [
-  { allow: owner, ownerField: "owner", identityClaim: "cognito:sub" },
-  { allow: groups, groups: ["admin"], operations: [read] }
-]) {
-  id: ID!
-  owner: ID
-  image: String!
-  type: String!
-  title: String!
-  description: String!
-  price: Float!
-  latitude: Float!
-  longitude: Float!
-  createdAt: AWSDateTime
-  updatedAt: AWSDateTime
-}
 
 type UserProfile @model @auth(rules: [
   { allow: owner, ownerField: "owner", identityClaim: "cognito:sub" },
@@ -48,6 +32,10 @@ type UserActivity @model @auth(rules: [
   timestamp: AWSDateTime!
 }
 
+"""
+Pet type without any public/apiKey access. Owners can manage their own pets; admins can read all.
+Add this if you need a secure Pet model.
+"""
 type Pet @model @auth(rules: [
   { allow: owner, ownerField: "owner", identityClaim: "cognito:sub" },
   { allow: groups, groups: ["admin"], operations: [read] }

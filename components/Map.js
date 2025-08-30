@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 import ReactMapGL, { Marker, Popup } from 'react-map-gl';
 import { useState } from "react";
 import { getCenter } from 'geolib';
@@ -58,7 +59,7 @@ const [viewport, setViewport] = useState({
                                 longitude={result.long}
                             >
                                 <div>
-                                    <img src={result.img} />
+                                    <img src={result.img} alt={result.title || "Location image"} />
                                     <h5>{result.title}</h5>
                                     <h4>{result.price}</h4>
                                 </div>

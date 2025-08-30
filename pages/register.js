@@ -1,17 +1,15 @@
 import Header from '../components/Header'
-import Selection from '../components/Selection'
-import '../configureAmplify'
-import { Auth, API, graphqlOperation } from 'aws-amplify';
-import kaymak from "../images/kaymak.jpg";
-import corgi from "../images/Corgi.jpeg";
-import Radio from '../components/Radio';
+import PetRegistrationForm from '../components/PetRegistrationForm'
 
 function Register() {
-    return (
-        <div className='bg-white'>
-            <Header />
-        </div>    
-    )
+  return (
+    <div className='bg-white min-h-screen'>
+      <Header />
+      <main className="py-6">
+        <PetRegistrationForm />
+      </main>
+    </div>
+  )
 }
 
 export default Register

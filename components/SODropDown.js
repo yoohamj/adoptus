@@ -33,47 +33,23 @@ function SODropDown() {
                         className={classNames(
                             active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm font-bold'
                         )}>
-                        Sign Up
+                        Sign In
                     </Link>
                     )}
-                </Menu.Item>
-                <Menu.Item>
-                    {({ active }) => (
-                        <Link
-                            href="/profile" 
-                            className={classNames(
-                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm'
-                                )}
-                         >
-                            Log In
-                        </Link>
-                        )}
                 </Menu.Item>
             </div>
             <div className="py-1">
                 <Menu.Item>
                     {({ active }) => (
-                        <a
-                            href="#"
-                            className={classNames(active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                        'block px-4 py-2 text-sm'
-                                        )}
-                        >
-                            Setting
-                        </a>
-                        )}
-                </Menu.Item>
-                <Menu.Item>
-                    {({ active }) => (
-                        <a
-                            href="#"
+                        <Link
+                            href="/help"
                             className={classNames(
                             active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                             'block px-4 py-2 text-sm'
                             )}
                         >
                         Help
-                        </a>
+                        </Link>
                     )}
                 </Menu.Item>
             </div>

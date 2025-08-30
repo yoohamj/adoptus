@@ -11,7 +11,7 @@ function Footer() {
                 >AboutUs
                 </Link>
                 <p><Link
-                    href="https://www.instagram.com/kaymak_dad/"
+                    href="https://www.instagram.com/yooham_kaymak/"
                 >Newsroom
                 </Link></p>
                 <p>Investors</p>

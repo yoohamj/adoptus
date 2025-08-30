@@ -1,0 +1,21 @@
+{
+    "appName": "adoptus",
+    "roleName": "pinpointLambdaRole631620b6",
+    "cloudformationPolicyName": "cloudformationPolicy631620b6",
+    "cloudWatchPolicyName": "cloudWatchPolicy631620b6",
+    "pinpointPolicyName": "pinpointPolicy631620b6",
+    "authPolicyName": "pinpoint_amplify_631620b6",
+    "unauthPolicyName": "pinpoint_amplify_631620b6",
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    }
+}
