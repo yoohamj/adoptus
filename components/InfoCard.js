@@ -1,8 +1,7 @@
 import Image from "next/image"
 import { HeartIcon } from "@heroicons/react/24/outline";
-import { StarIcon } from "@heroicons/react/24/solid";
 
-function InfoCard({ img, location, title, description, star, price, total }) {
+function InfoCard({ img, location, title, description, price, total, distanceKm }) {
     return (
         <div className="flex py-7 px-2 pr-4 border-b cursor-pointer hover:opacity-80 hover:shadow-lg treansition duration-200 ease-out first: border-t">
             <div className="relative h-24 w-40 md:h-52 md:w-80 flex-shrink-0">
@@ -23,9 +22,8 @@ function InfoCard({ img, location, title, description, star, price, total }) {
                 <div className="border-b w-10 pt-2" />
                 <p className="pt-2 text-sm text-gray-500 flex-grow">{description}</p>
                 <div className="flex justify-between items-end">
-                    <p className="flex items-center">
-                        <StarIcon className="h-5 text-red-400" />
-                        {star}
+                    <p className="text-sm text-gray-600">
+                        {typeof distanceKm === 'number' ? (`~ ${distanceKm < 10 ? distanceKm.toFixed(1) : Math.round(distanceKm)} km away`) : ''}
                     </p>
                     <div>
                         <p className="text-lg lg:text-2xl font-semibold pb-2">{price}</p>

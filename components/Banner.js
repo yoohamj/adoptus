@@ -1,14 +1,36 @@
 import Image from "next/image";
 import { useRouter } from "next/dist/client/router"
+import { useState } from 'react'
 
 function Banner() {
   const router = useRouter();
+  const [locating, setLocating] = useState(false)
   const search = () => {
-    router.push('/search');
+    if (typeof window === 'undefined' || !('geolocation' in navigator)) {
+      router.push({ pathname: '/search', query: { location: 'Nearby' } })
+      return
+    }
+    setLocating(true)
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords || {}
+        setLocating(false)
+        if (typeof latitude === 'number' && typeof longitude === 'number') {
+          router.push({ pathname: '/search', query: { lat: latitude.toFixed(6), lng: longitude.toFixed(6), location: 'Nearby' } })
+        } else {
+          router.push({ pathname: '/search', query: { location: 'Nearby' } })
+        }
+      },
+      () => {
+        setLocating(false)
+        router.push({ pathname: '/search', query: { location: 'Nearby' } })
+      },
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
+    )
   };
 
   return (
-    <div className="relative h-[200px] sm:h-[300px] lg:h-[350px] xl:h-[400px]">
+    <div className="relative h-[280px] sm:h-[360px] lg:h-[350px] xl:h-[400px]">
       <Image
         src="https://links.papareact.com/0fm"
         alt="banner background"
@@ -22,9 +44,10 @@ function Banner() {
           <p className="text-white/90 hidden md:block mt-2">Browse pets from shelters and rescues near you.</p>
           <button
             onClick={search}
-            className="mt-5 inline-flex items-center justify-center bg-white text-blue-700 font-semibold px-6 py-3 rounded-full shadow hover:shadow-md active:scale-95 transition"
+            disabled={locating}
+            className={`mt-5 inline-flex items-center justify-center bg-white text-blue-700 font-semibold px-6 py-3 rounded-full shadow hover:shadow-md active:scale-95 transition ${locating ? 'opacity-70 cursor-wait' : ''}`}
           >
-            Search Nearby
+            {locating ? 'Locating…' : 'Search Nearby'}
           </button>
         </div>
       </div>

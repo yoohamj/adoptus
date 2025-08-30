@@ -1,27 +1,80 @@
 import Link from 'next/link'
 
-const Item = ({ href, iconId, label }) => (
-  <Link
-    href={href}
-    className="group block rounded-[10px] border border-gray-300 bg-white p-4 shadow hover:bg-gray-100 hover:shadow-md hover:outline hover:outline-2 hover:outline-blue-600 active:scale-[0.99] transition"
-  >
-    <div className="flex flex-col items-center justify-center gap-3 aspect-square">
-      <svg className="h-14 w-14 text-blue-700" aria-hidden>
-        <use href={`/icons/sprites.svg#${iconId}`} />
-      </svg>
-      <span className="text-sm font-medium text-gray-800">{label}</span>
-    </div>
-  </Link>
+// Inline SVG icons using currentColor so we can color-match the logo
+const IconDog = (props) => (
+  <svg viewBox="0 0 512 512" aria-hidden {...props}>
+    <path
+      fill="currentColor"
+      d="M393.3,161.33,334.532,76.438a48.09,48.09,0,0,0-38.775-20.673l-111.527-1.6-.23,0c-57.579,0-101.757,9.631-130.21,56.634C27.3,154.551,16,229.08,16,360v16H52.557L29.024,496h32.61L85.167,376H96a99.521,99.521,0,0,0,70.088-27.992c16.979-16.246,29.226-38.472,35.419-64.274l.056-.232L229.006,152h-32.69L170.337,276.488C162.425,309.168,138.766,344,96,344H48.06c.869-113.266,11.182-180.419,33.105-216.634,18.4-30.4,45.295-41.191,102.724-41.206l111.408,1.6a16.026,16.026,0,0,1,12.925,6.891L374.7,190.67,464,205.554v16.959l-14.892,79.421c-4.395,23.441-11.908,35.249-42.718,38.95L280.084,362.493,279.249,496h32l.667-106.493,98.7-16.9c22.36-2.749,38.857-9.955,50.426-22.023,9.89-10.318,15.909-23.5,19.519-42.752L496,225.487V178.446Z"
+    />
+  </svg>
+)
+
+const IconCat = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden {...props}>
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      fill="currentColor"
+      d="M3.03675 2.49516C3.262 2.10996 3.7152 1.92062 4.14754 2.03109C5.97557 2.49817 7.55118 3.2517 9.03129 4.3653C9.96974 4.05942 10.9671 3.8947 12 3.8947C13.0328 3.8947 14.0302 4.05942 14.9687 4.3653C16.4488 3.2517 18.0244 2.49817 19.8524 2.03109C20.2848 1.92062 20.738 2.10996 20.9632 2.49516C21.6136 3.60735 21.682 4.84507 21.5423 5.95618C21.4242 6.89524 21.1479 7.81637 20.8761 8.60644C21.5951 10.0574 22 11.7048 22 13.4473C22 14.0796 21.9465 14.6779 21.8433 15.242L22.7737 15.0259C23.3117 14.9009 23.8491 15.2357 23.974 15.7737C24.099 16.3117 23.7642 16.8491 23.2262 16.974L21.0977 17.4685C20.7875 18.072 20.4027 18.6166 19.9517 19.1014L20.6281 19.7012C21.0414 20.0677 21.0793 20.6997 20.7129 21.1129C20.3465 21.5261 19.7144 21.5641 19.3012 21.1976L18.3886 20.3884C16.6081 21.5099 14.358 22 12 22C9.64192 22 7.39187 21.5099 5.61135 20.3884L4.69872 21.1977C4.2855 21.5641 3.65348 21.5261 3.28705 21.1129C2.92063 20.6997 2.95856 20.0677 3.37179 19.7012L4.04822 19.1014C3.59721 18.6166 3.21244 18.072 2.90229 17.4685L0.773707 16.974C0.235747 16.8491 -0.0990517 16.3117 0.0259144 15.7737C0.150881 15.2357 0.688289 14.9009 1.22625 15.0259L2.15669 15.242C2.05349 14.6779 1.99998 14.0796 1.99998 13.4473C1.99998 11.7048 2.40488 10.0574 3.12385 8.60644C2.85211 7.81637 2.57578 6.89524 2.45771 5.95618C2.318 4.84507 2.38635 3.60735 3.03675 2.49516ZM19.6556 15.7502L16.3923 16.5082C16.028 16.5929 15.7414 16.8737 15.6494 17.2363C15.5573 17.5988 15.6753 17.9824 15.9551 18.2305L16.8095 18.9881C15.5088 19.6568 13.8601 20 12 20C10.1399 20 8.49112 19.6568 7.19043 18.9881L8.04479 18.2305C8.32463 17.9824 8.44261 17.5988 8.35058 17.2363C8.25855 16.8738 7.97191 16.5929 7.60759 16.5083L4.34436 15.7502C4.12161 15.0798 3.99998 14.3155 3.99998 13.4473C3.99998 11.8822 4.39737 10.4207 5.08744 9.16612C5.22557 8.915 5.24931 8.61669 5.15264 8.34688C4.84532 7.48912 4.55212 6.58184 4.44208 5.70667C4.37247 5.15308 4.3816 4.65327 4.48556 4.21124C5.85937 4.66259 7.05992 5.32724 8.21953 6.26906C8.49981 6.49669 8.88102 6.55556 9.21691 6.42307C10.0831 6.08142 11.0202 5.8947 12 5.8947C12.9798 5.8947 13.9169 6.08142 14.7831 6.42307C15.1189 6.55556 15.5002 6.49669 15.7804 6.26906C16.94 5.32724 18.1406 4.66259 19.5144 4.21124C19.6184 4.65327 19.6275 5.15308 19.5579 5.70667C19.4478 6.58184 19.1546 7.48912 18.8473 8.34688C18.7506 8.61669 18.7744 8.915 18.9125 9.16612C19.6026 10.4207 20 11.8822 20 13.4473C20 14.3155 19.8784 15.0798 19.6556 15.7502ZM16 13.5C16.8284 13.5 17.5 12.8284 17.5 12C17.5 11.1715 16.8284 10.5 16 10.5C15.1716 10.5 14.5 11.1715 14.5 12C14.5 12.8284 15.1716 13.5 16 13.5ZM8.12132 13.6213C8.94974 13.6213 9.62132 12.9497 9.62132 12.1213C9.62132 11.2928 8.94974 10.6213 8.12132 10.6213C7.29289 10.6213 6.62132 11.2928 6.62132 12.1213C6.62132 12.9497 7.29289 13.6213 8.12132 13.6213ZM11 15C10.5955 15 10.2309 15.2436 10.0761 15.6173C9.92132 15.991 10.0069 16.4211 10.2929 16.7071L11.2929 17.7071C11.6834 18.0976 12.3166 18.0976 12.7071 17.7071L13.7071 16.7071C13.9931 16.4211 14.0786 15.991 13.9239 15.6173C13.7691 15.2436 13.4044 15 13 15H11Z"
+    />
+  </svg>
+)
+
+const IconBird = (props) => (
+  <svg viewBox="0 0 128 128" aria-hidden {...props}>
+    <g fill="currentColor">
+      <path d="M124.3,32.3l2.4-3.2l-6.4-4.8l-2.4,3.2c-2.7,3.6-5.9,6.7-9.5,9.2l-1.7,3.4c0,1,0.1,2,0.1,3c0,26.9-20.1,64.7-64.7,64.7   c-3.4,0-6.8-0.3-10.1-0.8l-4-0.6l-1.2,7.9l4,0.6c3.7,0.6,7.6,0.9,11.4,0.9c27.4,0,44.5-12.9,54-23.7c11.9-13.5,18.7-31.3,18.7-49   c0-0.4,0-0.8,0-1.2C118.4,39.2,121.5,35.9,124.3,32.3z"/>
+      <path d="M10.8,105.3c11.9,0,23.1-3.9,32.5-11.2l3.1-2.5l-4.9-6.3l-3.1,2.5c-7.9,6.2-17.4,9.5-27.5,9.5c-1.8,0-3.5-0.1-5.3-0.3   l-4-0.5l-0.9,7.9l4,0.5C6.7,105.2,8.8,105.3,10.8,105.3z"/>
+      <path d="M22.8,80.5c2.5,0,5-0.3,7.4-1l3.9-1L32,70.8l-3.9,1c-2.9,0.8-6.1,0.9-9.1,0.3l-3.9-0.8l-1.5,7.9l3.9,0.8   C19.3,80.4,21.1,80.5,22.8,80.5z"/>
+      <path d="M24.6,59.8l0.3-8l-4-0.1c-3.2-0.1-6.3-1-9.1-2.5l-3.5-1.9l-3.9,7l3.5,1.9c3.9,2.2,8.3,3.4,12.8,3.5L24.6,59.8z"/>
+      <path d="M67,44.9c-0.3-1.5-0.5-3-0.5-4.6c0-11.1,9-20.2,20.2-20.2c5.6,0,10.9,2.3,14.7,6.4l3.7,1.2c4.7-0.9,9.3-2.5,13.6-4.7   l3.6-1.8l-3.6-7.1l-3.6,1.8c-3,1.5-6.2,2.7-9.5,3.5c-5.1-4.6-11.9-7.3-18.9-7.3c-15.5,0-28.2,12.6-28.2,28.2c0,0.4,0,0.7,0,1.1   C42.1,39.3,26.9,31,16.4,18.1l-6.6,0.5C7.3,22.8,6,27.7,6,32.7v4h8v-4c0-1.6,0.2-3.2,0.6-4.7c12.7,13,30,20.9,48.3,21.8L67,44.9z"/>
+    </g>
+  </svg>
+)
+
+const IconShelter = (props) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden {...props}>
+    <path d="M22 22L2 22" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M2 11L6.06296 7.74968M22 11L13.8741 4.49931C12.7784 3.62279 11.2216 3.62279 10.1259 4.49931L9.34398 5.12486" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M15.5 5.5V3.5C15.5 3.22386 15.7239 3 16 3H18.5C18.7761 3 19 3.22386 19 3.5V8.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M4 22V9.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M20 9.5V13.5M20 22V17.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+    <path d="M15 22V17C15 15.5858 15 14.8787 14.5607 14.4393C14.1213 14 13.4142 14 12 14C10.5858 14 9.87868 14 9.43934 14.4393M9 22V17" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M14 9.5C14 10.6046 13.1046 11.5 12 11.5C10.8954 11.5 10 10.6046 10 9.5C10 8.39543 10.8954 7.5 12 7.5C13.1046 7.5 14 8.39543 14 9.5Z" stroke="currentColor" strokeWidth="1.5"/>
+  </svg>
+)
+
+const Item = ({ href, Icon, label }) => (
+  <li className="flex items-center justify-center">
+    <Link
+      href={href}
+      aria-label={`Browse ${label}`}
+      className="group block mx-auto w-[128px] h-[128px] md:w-[147px] md:h-[147px] cursor-pointer rounded-[10px] border border-[#d2d1d3] bg-white p-3 md:p-4 shadow-[0_4px_4px_rgba(0,0,0,0.05)] transition hover:bg-[linear-gradient(rgba(255,90,95,0.08),rgba(255,90,95,0.08))] hover:border-[#FF5A5F] hover:ring-1 hover:ring-[#FF5A5F] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF5A5F] focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+    >
+      <div className="flex h-full w-full flex-col items-center justify-center gap-2">
+        <Icon className="h-[64px] w-[64px] md:h-[79px] md:w-[79px] text-[#FF5A5F]" />
+        <span className="text-sm md:text-base font-medium text-gray-800">{label}</span>
+      </div>
+    </Link>
+  </li>
 )
 
 export default function LandingQuickNav() {
   return (
-    <section className="px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Item href="/search?location=Dogs" iconId="IconDogPortrait" label="Dogs" />
-        <Item href="/search?location=Cats" iconId="IconCatPortrait" label="Cats" />
-        <Item href="/search?location=Other%20Animals" iconId="IconPawOutline" label="Other Animals" />
-        <Item href="/search?location=Shelters%20%26%20Rescues" iconId="IconSheltersRescues" label="Shelters & Rescues" />
+    <section className="px-0">
+      <div
+        className="QuizzleCards-module--quizzleCardsWrapper--f8645 relative mx-auto w-full md:w-[772px] max-w-[772px] h-[154.594px] md:h-[154.594px] px-[20px]"
+        role="group"
+        aria-labelledby="quickNavHeading"
+      >
+        <h2 id="quickNavHeading" className="sr-only">Browse by category</h2>
+        <ul className="QuizzleCards-module--quizzleCards-list--3f7a2 grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-[48px]">
+          <Item href="/search?location=Dogs" Icon={IconDog} label="Dogs" />
+          <Item href="/search?location=Cats" Icon={IconCat} label="Cats" />
+          <Item href="/search?location=Other%20Animals" Icon={IconBird} label="Other Animals" />
+          <Item href="/search?location=Shelters%20%26%20Rescues" Icon={IconShelter} label="Shelters" />
+        </ul>
       </div>
     </section>
   )

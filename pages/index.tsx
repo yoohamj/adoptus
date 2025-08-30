@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Header from '../components/Header'
 import Banner from '../components/Banner'
-import Pets from '../components/Pets'
+import PetsDB from '../components/PetsDB'
 import Footer from '../components/Footer'
 import LandingQuickNav from '../components/LandingQuickNav'
 
@@ -18,14 +18,18 @@ export default function Home({}) {
       <Header />
       <div className="relative">
         <Banner />
+        <div className="absolute inset-x-0 bottom-0 z-20 flex justify-center translate-y-1/2">
+          <LandingQuickNav />
+        </div>
       </div>
-      <div className="relative z-10 -mt-20 md:-mt-28 lg:-mt-32">
-        <LandingQuickNav />
+      <div className="bg-white">
+        <div className="h-[200px] md:h-[100px]" />
       </div>
-      <section>
+
+      <section className="mt-0">
         <h2 className='text-4xl font-semibold p-5'>Pets Recently Added</h2>
         <div className="sm:mx-6 md:mx-10 lg:mx-12 px-3">
-          <Pets />
+          <PetsDB />
         </div>
       </section>
       
