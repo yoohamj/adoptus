@@ -3,7 +3,8 @@ backend:
   phases:
     build:
       commands:
-        - amplifyPush --simple --yes --allow-destructive-graphql-schema-updates
+        - echo "Pushing Amplify backend with destructive updates allowed"
+        - amplifyPush --simple --yes --allow-destructive-graphql-schema-updates || amplify push --yes --allow-destructive-graphql-schema-updates
   artifacts:
     baseDirectory: .
     files:
