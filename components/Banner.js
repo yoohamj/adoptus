@@ -8,12 +8,12 @@ function Banner() {
   };
 
   return (
-    <div className="relative h-[300px] sm:h-[500px] lg:h-[600px] xl:h-[700px]">
+    <div className="relative h-[200px] sm:h-[300px] lg:h-[350px] xl:h-[400px]">
       <Image
         src="https://links.papareact.com/0fm"
         alt="banner background"
         fill
-        className="object-cover object-top"
+        className="object-cover object-bottom"
         priority
       />
       <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-b from-transparent to-black/60">

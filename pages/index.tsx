@@ -19,7 +19,7 @@ export default function Home({}) {
       <div className="relative">
         <Banner />
       </div>
-      <div className="relative z-10 -mt-10 md:-mt-16">
+      <div className="relative z-10 -mt-20 md:-mt-28 lg:-mt-32">
         <LandingQuickNav />
       </div>
       <section>
