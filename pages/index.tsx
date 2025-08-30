@@ -3,6 +3,7 @@ import Header from '../components/Header'
 import Banner from '../components/Banner'
 import Pets from '../components/Pets'
 import Footer from '../components/Footer'
+import LandingQuickNav from '../components/LandingQuickNav'
 
 import React, { useEffect, useState } from 'react';
 
@@ -15,7 +16,12 @@ export default function Home({}) {
       </Head>
 
       <Header />
-      <Banner />
+      <div className="relative">
+        <Banner />
+      </div>
+      <div className="relative z-10 -mt-10 md:-mt-16">
+        <LandingQuickNav />
+      </div>
       <section>
         <h2 className='text-4xl font-semibold p-5'>Pets Recently Added</h2>
         <div className="sm:mx-6 md:mx-10 lg:mx-12 px-3">
