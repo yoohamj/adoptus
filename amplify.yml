@@ -1,25 +1,9 @@
 version: 1
-backend:
-  phases:
-    build:
-      commands:
-        - echo "Pushing Amplify backend with destructive updates allowed"
-        - amplifyPush --simple --yes --allow-destructive-graphql-schema-updates || amplify push --yes --allow-destructive-graphql-schema-updates
-  artifacts:
-    baseDirectory: .
-    files:
-      - '**/*'
-  cache:
-    paths:
-      - node_modules/**/*
 frontend:
   phases:
     preBuild:
       commands:
-        - nvm install 20
-        - nvm use 20
-        - node -v
-        - npm install
+        - npm ci
     build:
       commands:
         - npm run build
@@ -30,4 +14,3 @@ frontend:
   cache:
     paths:
       - node_modules/**/*
-      - .next/cache/**/*

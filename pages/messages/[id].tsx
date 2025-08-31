@@ -37,7 +37,7 @@ export default function ConversationPage() {
         const q = /* GraphQL */ `query MessagesByConversation($conversationID: ID!) {\n          messagesByConversation(conversationID: $conversationID, sortDirection: ASC) { items { id owner body createdAt conversationID } }\n        }`
         const res:any = await API.graphql({ query: q, variables: { conversationID: id } })
         const items = res?.data?.messagesByConversation?.items || []
-        setConvo(c => c ? { ...c, messages: items.map((m:any) => ({ id: m.id, senderId: m.owner, body: m.body, ts: Date.parse(m.createdAt) || Date.now() })) } : c)
+        setConvo((c: any) => c ? { ...c, messages: items.map((m:any) => ({ id: m.id, senderId: m.owner, body: m.body, ts: Date.parse(m.createdAt) || Date.now() })) } : c)
       } catch {}
     })()
   }, [id])
@@ -54,7 +54,7 @@ export default function ConversationPage() {
           next: (evt:any) => {
             const m = evt?.value?.data?.onCreateMessage
             if (m && String(m.conversationID) === String(id)) {
-              setConvo(c => c ? { ...c, messages: [ ...(c.messages||[]), { id: m.id, senderId: m.owner, body: m.body, ts: Date.parse(m.createdAt) || Date.now() } ] } : c)
+              setConvo((c: any) => c ? { ...c, messages: [ ...(c.messages||[]), { id: m.id, senderId: m.owner, body: m.body, ts: Date.parse(m.createdAt) || Date.now() } ] } : c)
             }
           }
         })
