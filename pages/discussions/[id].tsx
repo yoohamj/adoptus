@@ -4,6 +4,9 @@ import AuthPromptModal from '../../components/AuthPromptModal'
 import { useRouter } from 'next/router'
 import { useEffect, useMemo, useState, Fragment } from 'react'
 import { Auth } from 'aws-amplify'
+import { API, Storage } from 'aws-amplify'
+import { getDiscussion, updateDiscussion } from '../../graphql/discussions'
+import { createDiscussionComment, updateDiscussionComment, deleteDiscussionComment, discussionCommentsByDiscussion } from '../../graphql/discussionComments'
 import { Menu, Transition } from '@headlessui/react'
 import { EllipsisHorizontalIcon, PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline'
 
@@ -30,6 +33,8 @@ type Thread = {
   upvoters: string[]
   downvoters: string[]
   comments: Comment[]
+  images?: string[]
+  community?: string
 }
 
 const STORAGE_KEY = 'discussions_v1'
@@ -77,14 +82,61 @@ export default function ThreadPage() {
   const [editingPost, setEditingPost] = useState(false)
   const [editTitle, setEditTitle] = useState('')
   const [editBody, setEditBody] = useState('')
+  const [imageUrls, setImageUrls] = useState<string[]>([])
+  const [community, setCommunity] = useState<string>('')
+  const [comments, setComments] = useState<Comment[]>([])
 
   useEffect(() => {
-    setThreads(loadThreads())
+    const local = loadThreads()
+    setThreads(local)
     Auth.currentAuthenticatedUser().then(u => {
       setAuthor(u?.attributes?.preferred_username || u?.username || 'User')
       setUserId(u?.attributes?.sub || '')
       setUserEmail(u?.attributes?.email || '')
     }).catch(() => {})
+    const fetchApi = async () => {
+      try {
+        if (!id) return
+        const res: any = await API.graphql({ query: getDiscussion, variables: { id }, authMode: 'AMAZON_COGNITO_USER_POOLS' })
+        const it = res?.data?.getDiscussion
+        if (it) {
+          const t: any = {
+            id: it.id,
+            title: it.title,
+            body: it.body || '',
+            author: it.author || 'User',
+            authorId: it.authorId,
+            createdAt: it.createdAt ? Date.parse(it.createdAt) : Date.now(),
+            updatedAt: it.updatedAt ? Date.parse(it.updatedAt) : Date.now(),
+            lastActivityAt: it.lastActivityAt ? Date.parse(it.lastActivityAt) : Date.now(),
+            score: it.score || 0,
+            upvoters: it.upvoters || [],
+            downvoters: it.downvoters || [],
+            comments: Array.isArray(it.commentsJSON) ? it.commentsJSON : [],
+            community: it.community || 'Global',
+          }
+          setCommunity(it.community || 'Global')
+          setThreads([t])
+          // Load image URLs
+          if (Array.isArray(it.imageKeys) && it.imageKeys.length) {
+            try {
+              const urls = await Promise.all(it.imageKeys.map((k: string) => Storage.get(k, { level: 'public' })))
+              setImageUrls(urls)
+            } catch { setImageUrls([]) }
+          }
+          // Load comments
+          try {
+            const cm: any = await API.graphql({ query: discussionCommentsByDiscussion, variables: { discussionID: it.id, limit: 200 }, authMode: 'AMAZON_COGNITO_USER_POOLS' })
+            const items = cm?.data?.discussionCommentsByDiscussion?.items || []
+            const mapped: Comment[] = items.map((x: any) => ({ id: x.id, author: x.author || 'User', authorId: x.authorId, body: x.body, createdAt: x.createdAt ? Date.parse(x.createdAt) : Date.now(), score: x.score || 0 }))
+            setComments(mapped)
+          } catch {
+            setComments([])
+          }
+        }
+      } catch {}
+    }
+    fetchApi()
   }, [])
 
   const isMineLabel = (label: string) => {
@@ -127,7 +179,13 @@ export default function ThreadPage() {
           up = up.filter(v => v !== voter)
         }
         const score = up.length - down.length
-        return { ...t, upvoters: up, downvoters: down, score }
+        const updated = { ...t, upvoters: up, downvoters: down, score }
+        // Try remote update, ignore errors
+        try {
+          const input: any = { id: t.id, upvoters: up, downvoters: down, score, lastActivityAt: new Date().toISOString() }
+          ;(API as any).graphql({ query: updateDiscussion, variables: { input }, authMode: 'AMAZON_COGNITO_USER_POOLS' }).catch(()=>{})
+        } catch {}
+        return updated
       })
       saveThreads(next)
       return next
@@ -143,26 +201,31 @@ export default function ThreadPage() {
       setShowPrompt(true)
       return
     }
-    const now = Date.now()
-    const c: Comment = { id: cryptoRandomId(), author, authorId: userId, body: comment.trim(), createdAt: now, score: 0 }
-    setThreads(prev => {
-      const next = prev.map(t => t.id === thread.id ? { ...t, comments: [c, ...t.comments], lastActivityAt: now, updatedAt: now } : t)
-      saveThreads(next)
-      return next
-    })
-    setComment('')
+    try {
+      const input: any = { discussionID: String(thread.id), body: comment.trim(), author, authorId: userId, score: 0 }
+      const res: any = await API.graphql({ query: createDiscussionComment, variables: { input }, authMode: 'AMAZON_COGNITO_USER_POOLS' })
+      const created = res?.data?.createDiscussionComment
+      if (created) {
+        const c: Comment = { id: created.id, author: created.author || author, authorId: created.authorId || userId, body: created.body, createdAt: created.createdAt ? Date.parse(created.createdAt) : Date.now(), score: created.score || 0 }
+        setComments(prev => [c, ...prev])
+        setComment('')
+        return
+      }
+    } catch {
+      // Fallback to local
+      const now = Date.now()
+      const c: Comment = { id: cryptoRandomId(), author, authorId: userId, body: comment.trim(), createdAt: now, score: 0 }
+      setComments(prev => [c, ...prev])
+      setComment('')
+      return
+    }
   }
 
-  function removeComment(commentId: string) {
-    setThreads(prev => {
-      const next = prev.map(t => {
-        if (!thread || t.id !== thread.id) return t
-        const filtered = t.comments.filter(c => !(c.id === commentId && isMineComment(c)))
-        return { ...t, comments: filtered }
-      })
-      saveThreads(next)
-      return next
-    })
+  async function removeComment(commentId: string) {
+    try {
+      await API.graphql({ query: deleteDiscussionComment, variables: { input: { id: commentId } }, authMode: 'AMAZON_COGNITO_USER_POOLS' })
+    } catch {}
+    setComments(prev => prev.filter(c => c.id !== commentId))
   }
 
   function startEditComment(c: Comment) {
@@ -174,19 +237,14 @@ export default function ThreadPage() {
     setEditingCommentId(null)
     setEditingCommentBody('')
   }
-  function saveEditComment() {
+  async function saveEditComment() {
     if (!thread || !editingCommentId) return
     const body = editingCommentBody.trim()
     if (!body) return
-    setThreads(prev => {
-      const next = prev.map(t => {
-        if (t.id !== thread.id) return t
-        const updated = t.comments.map(c => c.id === editingCommentId && c.author === author ? { ...c, body } : c)
-        return { ...t, comments: updated, updatedAt: Date.now() }
-      })
-      saveThreads(next)
-      return next
-    })
+    try {
+      await API.graphql({ query: updateDiscussionComment, variables: { input: { id: editingCommentId, body } }, authMode: 'AMAZON_COGNITO_USER_POOLS' })
+    } catch {}
+    setComments(prev => prev.map(c => c.id === editingCommentId ? { ...c, body } : c))
     setEditingCommentId(null)
     setEditingCommentBody('')
   }
@@ -279,7 +337,7 @@ export default function ThreadPage() {
                 </Menu>
               )}
             </div>
-            <div className="text-xs text-gray-500 mt-1">by {thread.author} • {fmt(thread.createdAt)}</div>
+              <div className="text-xs text-gray-500 mt-1">{community && (<span className="mr-2 inline-block px-2 py-0.5 rounded bg-gray-800 text-white uppercase text-2xs">{community}</span>)} by {thread.author} • {fmt(thread.createdAt)}</div>
             {editingPost ? (
               <div className="mt-3 space-y-2">
                 <textarea value={editBody} onChange={e => setEditBody(e.target.value)} rows={5} className="w-full border rounded px-2 py-2 text-sm" />
@@ -289,7 +347,29 @@ export default function ThreadPage() {
                 </div>
               </div>
             ) : (
-              thread.body && <p className="mt-3 whitespace-pre-line">{thread.body}</p>
+              <>
+                {thread.body && <p className="mt-3 whitespace-pre-line">{thread.body}</p>}
+                {Array.isArray((thread as any).images) && (thread as any).images.length > 0 && (
+                  <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {(thread as any).images.map((src: string, i: number) => (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <a key={i} href={src} target="_blank" rel="noreferrer">
+                        <img src={src} alt={`image-${i}`} className="w-full h-32 object-cover rounded" />
+                      </a>
+                    ))}
+                  </div>
+                )}
+                {imageUrls.length > 0 && (
+                  <div className="mt-3 grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    {imageUrls.map((src, i) => (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <a key={i} href={src} target="_blank" rel="noreferrer">
+                        <img src={src} alt={`image-${i}`} className="w-full h-32 object-cover rounded" />
+                      </a>
+                    ))}
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
@@ -311,7 +391,7 @@ export default function ThreadPage() {
         </form>
 
         <ul className="mt-4 space-y-3">
-          {thread.comments.map(c => (
+          {comments.map(c => (
             <li key={c.id} className="border rounded-md p-3 bg-white">
               <div className="flex items-start justify-between gap-3">
                 <div className="text-sm"><span className="font-medium">{c.author}</span> <span className="text-gray-500">• {fmt(c.createdAt)}</span></div>

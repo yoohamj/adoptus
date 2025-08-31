@@ -4,7 +4,7 @@ import SignIn from '../components/SignIn';
 
 function Profile() {
     return (
-        <div className='bg-slate-100'>
+        <div className='bg-rose-50'>
             <Header />
             <SignIn />
         </div>

@@ -69,3 +69,46 @@ type Pet @model @auth(rules: [
   createdAt: AWSDateTime
   updatedAt: AWSDateTime
 }
+
+"""
+Discussion types for community forum. Requires `amplify push` after adding.
+Images are stored in S3 (public level) using keys in `imageKeys`.
+Comments are stored as JSON for simplicity.
+"""
+type Discussion @model @auth(rules: [
+  { allow: public, operations: [read] },
+  { allow: owner, ownerField: "owner", identityClaim: "cognito:sub", operations: [create, update, delete, read] },
+  { allow: groups, groups: ["admin"], operations: [read, update, delete] }
+]) {
+  id: ID!
+  owner: ID
+  author: String
+  authorId: ID
+  community: String!
+  title: String!
+  body: String
+  imageKeys: [String]
+  score: Int
+  upvoters: [String]
+  downvoters: [String]
+  comments: [DiscussionComment] @hasMany(indexName: "byDiscussion", fields: ["id"])
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  lastActivityAt: AWSDateTime
+}
+
+type DiscussionComment @model @auth(rules: [
+  { allow: public, operations: [read] },
+  { allow: owner, ownerField: "owner", identityClaim: "cognito:sub", operations: [create, update, delete, read] },
+  { allow: groups, groups: ["admin"], operations: [read, update, delete] }
+]) @index(name: "byDiscussion", fields: ["discussionID", "createdAt"], queryField: "discussionCommentsByDiscussion") {
+  id: ID!
+  discussionID: ID!
+  owner: ID
+  author: String
+  authorId: ID
+  body: String!
+  score: Int
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}

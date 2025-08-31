@@ -295,6 +295,135 @@ export const onDeletePet = /* GraphQL */ `
     }
   }
 `;
+export const onCreateDiscussion = /* GraphQL */ `
+  subscription OnCreateDiscussion(
+    $filter: ModelSubscriptionDiscussionFilterInput
+    $owner: String
+  ) {
+    onCreateDiscussion(filter: $filter, owner: $owner) {
+      id
+      owner
+      author
+      authorId
+      community
+      title
+      body
+      imageKeys
+      score
+      upvoters
+      downvoters
+      createdAt
+      updatedAt
+      lastActivityAt
+      __typename
+    }
+  }
+`;
+export const onUpdateDiscussion = /* GraphQL */ `
+  subscription OnUpdateDiscussion(
+    $filter: ModelSubscriptionDiscussionFilterInput
+    $owner: String
+  ) {
+    onUpdateDiscussion(filter: $filter, owner: $owner) {
+      id
+      owner
+      author
+      authorId
+      community
+      title
+      body
+      imageKeys
+      score
+      upvoters
+      downvoters
+      createdAt
+      updatedAt
+      lastActivityAt
+      __typename
+    }
+  }
+`;
+export const onDeleteDiscussion = /* GraphQL */ `
+  subscription OnDeleteDiscussion(
+    $filter: ModelSubscriptionDiscussionFilterInput
+    $owner: String
+  ) {
+    onDeleteDiscussion(filter: $filter, owner: $owner) {
+      id
+      owner
+      author
+      authorId
+      community
+      title
+      body
+      imageKeys
+      score
+      upvoters
+      downvoters
+      createdAt
+      updatedAt
+      lastActivityAt
+      __typename
+    }
+  }
+`;
+export const onCreateDiscussionComment = /* GraphQL */ `
+  subscription OnCreateDiscussionComment(
+    $filter: ModelSubscriptionDiscussionCommentFilterInput
+    $owner: String
+  ) {
+    onCreateDiscussionComment(filter: $filter, owner: $owner) {
+      id
+      discussionID
+      owner
+      author
+      authorId
+      body
+      score
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateDiscussionComment = /* GraphQL */ `
+  subscription OnUpdateDiscussionComment(
+    $filter: ModelSubscriptionDiscussionCommentFilterInput
+    $owner: String
+  ) {
+    onUpdateDiscussionComment(filter: $filter, owner: $owner) {
+      id
+      discussionID
+      owner
+      author
+      authorId
+      body
+      score
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteDiscussionComment = /* GraphQL */ `
+  subscription OnDeleteDiscussionComment(
+    $filter: ModelSubscriptionDiscussionCommentFilterInput
+    $owner: String
+  ) {
+    onDeleteDiscussionComment(filter: $filter, owner: $owner) {
+      id
+      discussionID
+      owner
+      author
+      authorId
+      body
+      score
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const onCreateConversation = /* GraphQL */ `
   subscription OnCreateConversation(
     $filter: ModelSubscriptionConversationFilterInput

@@ -3,7 +3,7 @@ import { Auth, Hub } from 'aws-amplify'
 
 import React from 'react'
 import { Menu, Transition } from '@headlessui/react'
-import { Bars3Icon, UserCircleIcon } from '@heroicons/react/24/solid'
+import { Bars3Icon, UserCircleIcon, ChatBubbleLeftRightIcon, HeartIcon, Cog6ToothIcon, ArrowRightOnRectangleIcon, UserGroupIcon, ClipboardDocumentListIcon, PlusCircleIcon, ShieldCheckIcon } from '@heroicons/react/24/solid'
 import { useState, useEffect, Fragment } from "react";
 import Link from 'next/link'
 
@@ -80,7 +80,7 @@ function SIDropDown({ setUiState }) {
   return (
     <Menu as="div" className="relative inline-block text-left">
         <Menu.Button className="inline-block ">
-            <Bars3Icon className="h-6 inline-block" />
+            <Bars3Icon className="h-6 hidden sm:inline-block" />
             {photoUrl ? (
               <span className="inline-block h-6 w-6 align-middle">
                 {/* Use native img to avoid Next Image domain restrictions for user-uploaded URLs */}
@@ -105,10 +105,23 @@ function SIDropDown({ setUiState }) {
                 <Menu.Item>
                 {({ active }) => (
                     <Link 
+                        href="/discussions" 
+                        className={classNames(
+                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'flex items-center px-4 py-2 text-sm font-bold'
+                        )}>
+                        <UserGroupIcon className="h-5 w-5 mr-2 text-gray-500" />
+                        Community
+                    </Link>
+                    )}
+                </Menu.Item>
+                <Menu.Item>
+                {({ active }) => (
+                    <Link 
                         href="/messages" 
                         className={classNames(
-                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm font-bold'
+                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'flex items-center px-4 py-2 text-sm font-bold'
                         )}>
+                        <ChatBubbleLeftRightIcon className="h-5 w-5 mr-2 text-gray-500" />
                         Messages
                     </Link>
                     )}
@@ -118,9 +131,10 @@ function SIDropDown({ setUiState }) {
                         <Link
                             href="/favorites"
                             className={classNames(
-                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm font-bold'
+                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'flex items-center px-4 py-2 text-sm font-bold'
                                 )}
                          >
+                            <HeartIcon className="h-5 w-5 mr-2 text-gray-500" />
                             Favorites
                         </Link>
                         )}
@@ -132,8 +146,9 @@ function SIDropDown({ setUiState }) {
                     <Link 
                         href="/messages" 
                         className={classNames(
-                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm '
+                            active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'flex items-center px-4 py-2 text-sm '
                         )}>
+                        <ClipboardDocumentListIcon className="h-5 w-5 mr-2 text-gray-500" />
                         Manage Listings
                     </Link>
                     )}
@@ -143,9 +158,10 @@ function SIDropDown({ setUiState }) {
                         <Link
                             href="/register"
                             className={classNames(
-                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm '
+                                active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'flex items-center px-4 py-2 text-sm '
                                 )}
                          >
+                            <PlusCircleIcon className="h-5 w-5 mr-2 text-gray-500" />
                             Register Your Pet
                         </Link>
                         )}
@@ -157,9 +173,10 @@ function SIDropDown({ setUiState }) {
                         <Link
                             href="/settings"
                             className={classNames(active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                        'block px-4 py-2 text-sm'
+                                        'flex items-center px-4 py-2 text-sm'
                                         )}
                         >
+                            <Cog6ToothIcon className="h-5 w-5 mr-2 text-gray-500" />
                             Settings
                         </Link>
                         )}
@@ -170,9 +187,10 @@ function SIDropDown({ setUiState }) {
                       <Link
                         href="/admin/dashboard"
                         className={classNames(active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                                    'block px-4 py-2 text-sm'
+                                    'flex items-center px-4 py-2 text-sm'
                                     )}
                       >
+                        <ShieldCheckIcon className="h-5 w-5 mr-2 text-gray-500" />
                         Admin Dashboard
                       </Link>
                     )}
@@ -191,9 +209,10 @@ function SIDropDown({ setUiState }) {
                           }}
                           className={classNames(
                               active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                              'block w-full text-left px-4 py-2 text-sm'
+                              'flex w-full items-center text-left px-4 py-2 text-sm'
                           )}
                         >
+                          <ArrowRightOnRectangleIcon className="h-5 w-5 mr-2 text-gray-500" />
                           Sign Out
                         </button>
                     )}

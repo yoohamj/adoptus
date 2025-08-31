@@ -240,6 +240,134 @@ export const listPets = /* GraphQL */ `
     }
   }
 `;
+export const getDiscussion = /* GraphQL */ `
+  query GetDiscussion($id: ID!) {
+    getDiscussion(id: $id) {
+      id
+      owner
+      author
+      authorId
+      community
+      title
+      body
+      imageKeys
+      score
+      upvoters
+      downvoters
+      createdAt
+      updatedAt
+      lastActivityAt
+      __typename
+    }
+  }
+`;
+export const listDiscussions = /* GraphQL */ `
+  query ListDiscussions(
+    $filter: ModelDiscussionFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listDiscussions(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        owner
+        author
+        authorId
+        community
+        title
+        body
+        imageKeys
+        score
+        upvoters
+        downvoters
+        createdAt
+        updatedAt
+        lastActivityAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getDiscussionComment = /* GraphQL */ `
+  query GetDiscussionComment($id: ID!) {
+    getDiscussionComment(id: $id) {
+      id
+      discussionID
+      owner
+      author
+      authorId
+      body
+      score
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listDiscussionComments = /* GraphQL */ `
+  query ListDiscussionComments(
+    $filter: ModelDiscussionCommentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listDiscussionComments(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        discussionID
+        owner
+        author
+        authorId
+        body
+        score
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const discussionCommentsByDiscussion = /* GraphQL */ `
+  query DiscussionCommentsByDiscussion(
+    $discussionID: ID!
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelDiscussionCommentFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    discussionCommentsByDiscussion(
+      discussionID: $discussionID
+      createdAt: $createdAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        discussionID
+        owner
+        author
+        authorId
+        body
+        score
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
 export const getConversation = /* GraphQL */ `
   query GetConversation($id: ID!) {
     getConversation(id: $id) {

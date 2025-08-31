@@ -124,10 +124,8 @@ function Header() {
         setFormState({ ...formState, [e.target.name]: e.target.value })
     }
 
-    console.log({ uiState })
-
     return (
-        <header className="sticky top-0 z-50 grid grid-cols-[auto_1fr_auto] md:grid-cols-[auto_auto_1fr_auto] items-center gap-2 md:gap-4 bg-white shadow-md p-5 md:px-10">
+        <header className="sticky top-0 z-50 grid grid-cols-[auto_1fr_auto] md:grid-cols-[auto_1fr_auto] items-center gap-2 md:gap-4 bg-white shadow-md p-5 md:px-10">
             {/* left */}
             <div onClick={() => router.push("/")} className="relative flex items-center h-10 w-28 md:w-32 cursor-pointer my-auto">
                 <Image
@@ -137,18 +135,10 @@ function Header() {
                     className="object-contain object-left"
                 />
             </div>
-            {/* Discussions */}
-            <div className="hidden md:flex items-center justify-self-start">
-                <button
-                    onClick={() => router.push('/discussions')}
-                    className="text-gray-800 font-bold underline text-lg hover:text-gray-900"
-                >
-                    Discussions
-                </button>
-            </div>
+            {/* Discussions removed as requested */}
 
             {/* Middle - Search*/}
-            <div className="relative justify-self-stretch w-full max-w-none md:max-w-lg">
+            <div className="relative justify-self-center w-full max-w-xl md:max-w-2xl">
                 <div className="flex items-center border-2 rounded-full py-2 shadow-sm">
                     <input
                         value={searchInput}
@@ -188,17 +178,10 @@ function Header() {
             {/* Right */}
             <div className="flex items-center justify-end text-gray-500 space-x-2 md:space-x-4">
                 <button
-                    onClick={() => {
-                        if (uiState === 'signedIn') {
-                            router.push('/register')
-                        } else {
-                            alert('Please sign in to register a pet.')
-                            router.push('/profile')
-                        }
-                    }}
+                    onClick={() => router.push('/discussions')}
                     className="hidden md:inline-flex items-center px-3 py-1.5 rounded-full border border-gray-300 text-gray-700 hover:bg-gray-50 text-sm"
                 >
-                    Register a pet
+                    Community
                 </button>
                 <div className="flex items-center space-x-2 border p-1 md:border-2 md:p-2 rounded-full hover:shadow-xl active:scale-90 transition duration-150">
                     {

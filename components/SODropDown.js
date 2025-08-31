@@ -12,7 +12,7 @@ function SODropDown() {
   return (
     <Menu as="div" className="relative inline-block text-left">
         <Menu.Button className="inline-block ">
-            <Bars3Icon className="h-6 inline-block" />
+            <Bars3Icon className="h-6 hidden sm:inline-block" />
             <UserCircleIcon className="h-6 inline-block" />
         </Menu.Button>
         <Transition

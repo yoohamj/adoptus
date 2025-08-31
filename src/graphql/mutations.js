@@ -295,6 +295,135 @@ export const deletePet = /* GraphQL */ `
     }
   }
 `;
+export const createDiscussion = /* GraphQL */ `
+  mutation CreateDiscussion(
+    $input: CreateDiscussionInput!
+    $condition: ModelDiscussionConditionInput
+  ) {
+    createDiscussion(input: $input, condition: $condition) {
+      id
+      owner
+      author
+      authorId
+      community
+      title
+      body
+      imageKeys
+      score
+      upvoters
+      downvoters
+      createdAt
+      updatedAt
+      lastActivityAt
+      __typename
+    }
+  }
+`;
+export const updateDiscussion = /* GraphQL */ `
+  mutation UpdateDiscussion(
+    $input: UpdateDiscussionInput!
+    $condition: ModelDiscussionConditionInput
+  ) {
+    updateDiscussion(input: $input, condition: $condition) {
+      id
+      owner
+      author
+      authorId
+      community
+      title
+      body
+      imageKeys
+      score
+      upvoters
+      downvoters
+      createdAt
+      updatedAt
+      lastActivityAt
+      __typename
+    }
+  }
+`;
+export const deleteDiscussion = /* GraphQL */ `
+  mutation DeleteDiscussion(
+    $input: DeleteDiscussionInput!
+    $condition: ModelDiscussionConditionInput
+  ) {
+    deleteDiscussion(input: $input, condition: $condition) {
+      id
+      owner
+      author
+      authorId
+      community
+      title
+      body
+      imageKeys
+      score
+      upvoters
+      downvoters
+      createdAt
+      updatedAt
+      lastActivityAt
+      __typename
+    }
+  }
+`;
+export const createDiscussionComment = /* GraphQL */ `
+  mutation CreateDiscussionComment(
+    $input: CreateDiscussionCommentInput!
+    $condition: ModelDiscussionCommentConditionInput
+  ) {
+    createDiscussionComment(input: $input, condition: $condition) {
+      id
+      discussionID
+      owner
+      author
+      authorId
+      body
+      score
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateDiscussionComment = /* GraphQL */ `
+  mutation UpdateDiscussionComment(
+    $input: UpdateDiscussionCommentInput!
+    $condition: ModelDiscussionCommentConditionInput
+  ) {
+    updateDiscussionComment(input: $input, condition: $condition) {
+      id
+      discussionID
+      owner
+      author
+      authorId
+      body
+      score
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteDiscussionComment = /* GraphQL */ `
+  mutation DeleteDiscussionComment(
+    $input: DeleteDiscussionCommentInput!
+    $condition: ModelDiscussionCommentConditionInput
+  ) {
+    deleteDiscussionComment(input: $input, condition: $condition) {
+      id
+      discussionID
+      owner
+      author
+      authorId
+      body
+      score
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const createConversation = /* GraphQL */ `
   mutation CreateConversation(
     $input: CreateConversationInput!

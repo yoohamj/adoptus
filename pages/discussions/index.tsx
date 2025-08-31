@@ -4,6 +4,8 @@ import Header from '../../components/Header'
 import { useEffect, useMemo, useState } from 'react'
 import { Auth } from 'aws-amplify'
 import { PlusIcon } from '@heroicons/react/24/solid'
+import { API, Storage } from 'aws-amplify'
+import { listDiscussions } from '../../graphql/discussions'
 
 type Comment = {
   id: string
@@ -26,6 +28,7 @@ type Thread = {
   upvoters: string[]
   downvoters: string[]
   comments: Comment[]
+  community?: string
 }
 
 type SortKey = 'best' | 'hot' | 'new'
@@ -122,9 +125,33 @@ export default function DiscussionsPage() {
   const [author, setAuthor] = useState<string>('Guest')
 
   useEffect(() => {
-    // seed and load
-    const seeded = seedIfEmpty()
-    setThreads(seeded)
+    // Try load from API, else seed local
+    const load = async () => {
+      try {
+        const res: any = await API.graphql({ query: listDiscussions, variables: { limit: 100 }, authMode: 'AMAZON_COGNITO_USER_POOLS' })
+        const items = res?.data?.listDiscussions?.items || []
+        const mapped: Thread[] = items.map((it: any) => ({
+          id: it.id,
+          title: it.title,
+          body: it.body || '',
+          author: it.author || 'User',
+          createdAt: it.createdAt ? Date.parse(it.createdAt) : Date.now(),
+          updatedAt: it.updatedAt ? Date.parse(it.updatedAt) : Date.now(),
+          lastActivityAt: it.lastActivityAt ? Date.parse(it.lastActivityAt) : Date.now(),
+          score: it.score || 0,
+          upvoters: it.upvoters || [],
+          downvoters: it.downvoters || [],
+          comments: [],
+          community: it.community || 'Global',
+          // images will be loaded on detail page
+        }))
+        setThreads(mapped)
+      } catch {
+        const seeded = seedIfEmpty()
+        setThreads(seeded)
+      }
+    }
+    load()
     Auth.currentAuthenticatedUser().then(u => {
       setAuthor(u?.attributes?.preferred_username || u?.username || 'User')
     }).catch(() => {})
@@ -180,7 +207,7 @@ export default function DiscussionsPage() {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex items-center justify-between gap-4">
           <h1 className="text-2xl sm:text-3xl font-semibold">Discussions</h1>
-          <Link href="/discussions/create" className="inline-flex items-center gap-2 bg-blue-600 text-white rounded-md px-4 py-2 text-sm font-medium hover:bg-blue-700">
+          <Link href="/discussions/create" className="inline-flex items-center gap-2 bg-[#FF5A5F] text-white rounded-md px-4 py-2 text-sm font-medium hover:bg-[#ff7b80]">
             <PlusIcon className="h-5 w-5" />
             <span>Create</span>
           </Link>
@@ -202,7 +229,10 @@ export default function DiscussionsPage() {
 
         <ul className="mt-4 space-y-3">
           {sorted.map(t => (
-            <li key={t.id} className="border rounded-md p-4 bg-white">
+            <li key={t.id} className="border rounded-md p-4 bg-white relative">
+              {t.community && (
+                <span className="absolute -top-2 -left-2 bg-gray-800 text-white text-[10px] uppercase tracking-wide px-2 py-0.5 rounded">{t.community}</span>
+              )}
               <div className="flex gap-3">
                 <div className="flex flex-col items-center text-gray-500">
                   <button aria-label="Upvote" onClick={() => vote(t.id, 1)} className="hover:text-blue-600">▲</button>

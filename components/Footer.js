@@ -30,9 +30,9 @@ function Footer() {
             </div>
             <div className="space-y-4 text-xs text-gray-800">
                 <h5 className="font-bold">SUPPORT</h5>
-                <p>Neighborhood Support</p>
                 <p>Help Center</p>
-                <p>Trust & Safety</p>
+                <p><Link href="/terms">Terms of Use</Link></p>
+                <p><Link href="/privacy">Privacy Policy</Link></p>
             </div>
         </div>
     )

@@ -83,6 +83,49 @@ type Pet @model @auth(rules: [
   updatedAt: AWSDateTime
 }
 
+"""
+Community Discussions
+Images are stored in S3 and referenced via imageKeys.
+Comments are separate records linked by discussionID. No images allowed in comments.
+Access: Any signed-in user can read; owners can create/update/delete; admins can manage.
+"""
+type Discussion @model @auth(rules: [
+  { allow: private, operations: [read] },
+  { allow: owner, ownerField: "owner", identityClaim: "cognito:sub", operations: [create, update, delete, read] },
+  { allow: groups, groups: ["admin"], operations: [read, update, delete] }
+]) {
+  id: ID!
+  owner: ID
+  author: String
+  authorId: ID
+  community: String!
+  title: String!
+  body: String
+  imageKeys: [String]
+  score: Int
+  upvoters: [String]
+  downvoters: [String]
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+  lastActivityAt: AWSDateTime
+}
+
+type DiscussionComment @model @auth(rules: [
+  { allow: private, operations: [read] },
+  { allow: owner, ownerField: "owner", identityClaim: "cognito:sub", operations: [create, update, delete, read] },
+  { allow: groups, groups: ["admin"], operations: [read, update, delete] }
+]) {
+  id: ID!
+  discussionID: ID! @index(name: "byDiscussion", queryField: "discussionCommentsByDiscussion", sortKeyFields: ["createdAt"])
+  owner: ID
+  author: String
+  authorId: ID
+  body: String!
+  score: Int
+  createdAt: AWSDateTime
+  updatedAt: AWSDateTime
+}
+
 
 # Messaging models
 type Conversation @model @auth(rules: [
