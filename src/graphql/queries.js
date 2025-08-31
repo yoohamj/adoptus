@@ -50,6 +50,7 @@ export const getUserProfile = /* GraphQL */ `
     getUserProfile(id: $id) {
       id
       owner
+      username
       email
       name
       birthdate
@@ -73,6 +74,42 @@ export const listUserProfiles = /* GraphQL */ `
       items {
         id
         owner
+        username
+        email
+        name
+        birthdate
+        city
+        state
+        country
+        pictureKey
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const userProfilesByUsername = /* GraphQL */ `
+  query UserProfilesByUsername(
+    $username: String!
+    $sortDirection: ModelSortDirection
+    $filter: ModelUserProfileFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    userProfilesByUsername(
+      username: $username
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        owner
+        username
         email
         name
         birthdate
@@ -194,6 +231,150 @@ export const listPets = /* GraphQL */ `
         adoptionFee
         availableDate
         photoKeys
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getConversation = /* GraphQL */ `
+  query GetConversation($id: ID!) {
+    getConversation(id: $id) {
+      id
+      members
+      petId
+      petName
+      lastMessageAt
+      lastMessageText
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listConversations = /* GraphQL */ `
+  query ListConversations(
+    $filter: ModelConversationFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listConversations(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        members
+        petId
+        petName
+        lastMessageAt
+        lastMessageText
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getMessage = /* GraphQL */ `
+  query GetMessage($id: ID!) {
+    getMessage(id: $id) {
+      id
+      conversationID
+      owner
+      participants
+      body
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listMessages = /* GraphQL */ `
+  query ListMessages(
+    $filter: ModelMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listMessages(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        id
+        conversationID
+        owner
+        participants
+        body
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const messagesByConversation = /* GraphQL */ `
+  query MessagesByConversation(
+    $conversationID: ID!
+    $createdAt: ModelStringKeyConditionInput
+    $sortDirection: ModelSortDirection
+    $filter: ModelMessageFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    messagesByConversation(
+      conversationID: $conversationID
+      createdAt: $createdAt
+      sortDirection: $sortDirection
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        conversationID
+        owner
+        participants
+        body
+        createdAt
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const getConversationRead = /* GraphQL */ `
+  query GetConversationRead($id: ID!) {
+    getConversationRead(id: $id) {
+      id
+      conversationID
+      userId
+      lastReadAt
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const listConversationReads = /* GraphQL */ `
+  query ListConversationReads(
+    $filter: ModelConversationReadFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listConversationReads(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+    ) {
+      items {
+        id
+        conversationID
+        userId
+        lastReadAt
         createdAt
         updatedAt
         __typename

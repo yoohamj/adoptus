@@ -11,6 +11,9 @@ export default async function handler(req, res) {
     if (!formData) {
       return res.status(400).json({ message: 'Missing formData' })
     }
+    if (!Array.isArray(photoKeys) || photoKeys.length === 0) {
+      return res.status(400).json({ message: 'At least one photo is required.' })
+    }
     const { API } = withSSRContext({ req })
 
     // Try to persist to AppSync. If the backend isn't ready, fall back gracefully.

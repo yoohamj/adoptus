@@ -72,6 +72,7 @@ export const onCreateUserProfile = /* GraphQL */ `
     onCreateUserProfile(filter: $filter, owner: $owner) {
       id
       owner
+      username
       email
       name
       birthdate
@@ -93,6 +94,7 @@ export const onUpdateUserProfile = /* GraphQL */ `
     onUpdateUserProfile(filter: $filter, owner: $owner) {
       id
       owner
+      username
       email
       name
       birthdate
@@ -114,6 +116,7 @@ export const onDeleteUserProfile = /* GraphQL */ `
     onDeleteUserProfile(filter: $filter, owner: $owner) {
       id
       owner
+      username
       email
       name
       birthdate
@@ -286,6 +289,156 @@ export const onDeletePet = /* GraphQL */ `
       adoptionFee
       availableDate
       photoKeys
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onCreateConversation = /* GraphQL */ `
+  subscription OnCreateConversation(
+    $filter: ModelSubscriptionConversationFilterInput
+  ) {
+    onCreateConversation(filter: $filter) {
+      id
+      members
+      petId
+      petName
+      lastMessageAt
+      lastMessageText
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateConversation = /* GraphQL */ `
+  subscription OnUpdateConversation(
+    $filter: ModelSubscriptionConversationFilterInput
+  ) {
+    onUpdateConversation(filter: $filter) {
+      id
+      members
+      petId
+      petName
+      lastMessageAt
+      lastMessageText
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteConversation = /* GraphQL */ `
+  subscription OnDeleteConversation(
+    $filter: ModelSubscriptionConversationFilterInput
+  ) {
+    onDeleteConversation(filter: $filter) {
+      id
+      members
+      petId
+      petName
+      lastMessageAt
+      lastMessageText
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onCreateMessage = /* GraphQL */ `
+  subscription OnCreateMessage(
+    $filter: ModelSubscriptionMessageFilterInput
+    $owner: String
+  ) {
+    onCreateMessage(filter: $filter, owner: $owner) {
+      id
+      conversationID
+      owner
+      participants
+      body
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateMessage = /* GraphQL */ `
+  subscription OnUpdateMessage(
+    $filter: ModelSubscriptionMessageFilterInput
+    $owner: String
+  ) {
+    onUpdateMessage(filter: $filter, owner: $owner) {
+      id
+      conversationID
+      owner
+      participants
+      body
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteMessage = /* GraphQL */ `
+  subscription OnDeleteMessage(
+    $filter: ModelSubscriptionMessageFilterInput
+    $owner: String
+  ) {
+    onDeleteMessage(filter: $filter, owner: $owner) {
+      id
+      conversationID
+      owner
+      participants
+      body
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onCreateConversationRead = /* GraphQL */ `
+  subscription OnCreateConversationRead(
+    $filter: ModelSubscriptionConversationReadFilterInput
+    $userId: String
+  ) {
+    onCreateConversationRead(filter: $filter, userId: $userId) {
+      id
+      conversationID
+      userId
+      lastReadAt
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateConversationRead = /* GraphQL */ `
+  subscription OnUpdateConversationRead(
+    $filter: ModelSubscriptionConversationReadFilterInput
+    $userId: String
+  ) {
+    onUpdateConversationRead(filter: $filter, userId: $userId) {
+      id
+      conversationID
+      userId
+      lastReadAt
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const onDeleteConversationRead = /* GraphQL */ `
+  subscription OnDeleteConversationRead(
+    $filter: ModelSubscriptionConversationReadFilterInput
+    $userId: String
+  ) {
+    onDeleteConversationRead(filter: $filter, userId: $userId) {
+      id
+      conversationID
+      userId
+      lastReadAt
       createdAt
       updatedAt
       __typename

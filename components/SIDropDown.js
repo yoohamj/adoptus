@@ -23,10 +23,45 @@ function SIDropDown({ setUiState }) {
       setPhotoUrl(fromAttributes || fromToken || null)
       const groups = user?.signInUserSession?.idToken?.payload?.['cognito:groups'] || []
       setIsAdmin(Array.isArray(groups) && groups.includes('admin'))
+      // Ensure a default unique username on first federated sign-in
+      try { await ensureDefaultUsername(user) } catch {}
     } catch (e) {
       setPhotoUrl(null)
       setIsAdmin(false)
     }
+  }
+
+  async function ensureDefaultUsername(user) {
+    const attrs = user?.attributes || {}
+    if (attrs.preferred_username) return
+    const sub = attrs.sub
+    let base = `user${(sub || '').slice(-6) || Math.random().toString(36).slice(2,8)}`.toLowerCase()
+    base = base.replace(/[^a-z0-9_]/g, '')
+    let candidate = base
+    const { API } = await import('aws-amplify')
+    const byUsername = /* GraphQL */ `query UserProfilesByUsername($username: String!) { userProfilesByUsername(username: $username) { items { id username } } }`
+    const exists = async (u) => {
+      try {
+        const res = await API.graphql({ query: byUsername, variables: { username: u }, authMode: 'AMAZON_COGNITO_USER_POOLS' })
+        const items = res?.data?.userProfilesByUsername?.items || []
+        return items.length > 0
+      } catch { return false }
+    }
+    for (let i=0;i<5;i++) {
+      if (!(await exists(candidate))) break
+      candidate = `${base}${Math.random().toString(36).slice(2,3)}`
+    }
+    try { await Auth.updateUserAttributes(user, { preferred_username: candidate }) } catch {}
+    // Upsert UserProfile.username
+    try {
+      const subId = attrs.sub
+      if (subId) {
+        const update = /* GraphQL */ `mutation UpdateUserProfile($input: UpdateUserProfileInput!) { updateUserProfile(input:$input){ id } }`
+        const create = /* GraphQL */ `mutation CreateUserProfile($input: CreateUserProfileInput!) { createUserProfile(input:$input){ id } }`
+        try { await API.graphql({ query: update, variables: { input: { id: subId, owner: subId, username: candidate } }, authMode: 'AMAZON_COGNITO_USER_POOLS' }) }
+        catch { await API.graphql({ query: create, variables: { input: { id: subId, owner: subId, username: candidate } }, authMode: 'AMAZON_COGNITO_USER_POOLS' }) }
+      }
+    } catch {}
   }
 
   useEffect(() => {
@@ -70,7 +105,7 @@ function SIDropDown({ setUiState }) {
                 <Menu.Item>
                 {({ active }) => (
                     <Link 
-                        href="/profile" 
+                        href="/messages" 
                         className={classNames(
                             active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm font-bold'
                         )}>
@@ -80,14 +115,14 @@ function SIDropDown({ setUiState }) {
                 </Menu.Item>
                 <Menu.Item>
                     {({ active }) => (
-                        <a
-                            href="#"
+                        <Link
+                            href="/favorites"
                             className={classNames(
                                 active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm font-bold'
                                 )}
                          >
-                            WishList
-                        </a>
+                            Favorites
+                        </Link>
                         )}
                 </Menu.Item>
             </div>
@@ -95,7 +130,7 @@ function SIDropDown({ setUiState }) {
                 <Menu.Item>
                 {({ active }) => (
                     <Link 
-                        href="/profile" 
+                        href="/messages" 
                         className={classNames(
                             active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm '
                         )}>

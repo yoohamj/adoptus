@@ -72,6 +72,7 @@ export const createUserProfile = /* GraphQL */ `
     createUserProfile(input: $input, condition: $condition) {
       id
       owner
+      username
       email
       name
       birthdate
@@ -93,6 +94,7 @@ export const updateUserProfile = /* GraphQL */ `
     updateUserProfile(input: $input, condition: $condition) {
       id
       owner
+      username
       email
       name
       birthdate
@@ -114,6 +116,7 @@ export const deleteUserProfile = /* GraphQL */ `
     deleteUserProfile(input: $input, condition: $condition) {
       id
       owner
+      username
       email
       name
       birthdate
@@ -286,6 +289,159 @@ export const deletePet = /* GraphQL */ `
       adoptionFee
       availableDate
       photoKeys
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const createConversation = /* GraphQL */ `
+  mutation CreateConversation(
+    $input: CreateConversationInput!
+    $condition: ModelConversationConditionInput
+  ) {
+    createConversation(input: $input, condition: $condition) {
+      id
+      members
+      petId
+      petName
+      lastMessageAt
+      lastMessageText
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateConversation = /* GraphQL */ `
+  mutation UpdateConversation(
+    $input: UpdateConversationInput!
+    $condition: ModelConversationConditionInput
+  ) {
+    updateConversation(input: $input, condition: $condition) {
+      id
+      members
+      petId
+      petName
+      lastMessageAt
+      lastMessageText
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteConversation = /* GraphQL */ `
+  mutation DeleteConversation(
+    $input: DeleteConversationInput!
+    $condition: ModelConversationConditionInput
+  ) {
+    deleteConversation(input: $input, condition: $condition) {
+      id
+      members
+      petId
+      petName
+      lastMessageAt
+      lastMessageText
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const createMessage = /* GraphQL */ `
+  mutation CreateMessage(
+    $input: CreateMessageInput!
+    $condition: ModelMessageConditionInput
+  ) {
+    createMessage(input: $input, condition: $condition) {
+      id
+      conversationID
+      owner
+      participants
+      body
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateMessage = /* GraphQL */ `
+  mutation UpdateMessage(
+    $input: UpdateMessageInput!
+    $condition: ModelMessageConditionInput
+  ) {
+    updateMessage(input: $input, condition: $condition) {
+      id
+      conversationID
+      owner
+      participants
+      body
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteMessage = /* GraphQL */ `
+  mutation DeleteMessage(
+    $input: DeleteMessageInput!
+    $condition: ModelMessageConditionInput
+  ) {
+    deleteMessage(input: $input, condition: $condition) {
+      id
+      conversationID
+      owner
+      participants
+      body
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const createConversationRead = /* GraphQL */ `
+  mutation CreateConversationRead(
+    $input: CreateConversationReadInput!
+    $condition: ModelConversationReadConditionInput
+  ) {
+    createConversationRead(input: $input, condition: $condition) {
+      id
+      conversationID
+      userId
+      lastReadAt
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const updateConversationRead = /* GraphQL */ `
+  mutation UpdateConversationRead(
+    $input: UpdateConversationReadInput!
+    $condition: ModelConversationReadConditionInput
+  ) {
+    updateConversationRead(input: $input, condition: $condition) {
+      id
+      conversationID
+      userId
+      lastReadAt
+      createdAt
+      updatedAt
+      __typename
+    }
+  }
+`;
+export const deleteConversationRead = /* GraphQL */ `
+  mutation DeleteConversationRead(
+    $input: DeleteConversationReadInput!
+    $condition: ModelConversationReadConditionInput
+  ) {
+    deleteConversationRead(input: $input, condition: $condition) {
+      id
+      conversationID
+      userId
+      lastReadAt
       createdAt
       updatedAt
       __typename

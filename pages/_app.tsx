@@ -1,6 +1,7 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import 'tailwindcss/tailwind.css';
+import 'react-phone-input-2/lib/style.css';
 import ProgressBar from "@badrap/bar-of-progress";
 import Router from "next/router";
 import Link from 'next/link'

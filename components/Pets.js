@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import house1 from "../images/Hollyhock.jpeg";
 import house2 from "../images/Horacio.jpeg";
 import house3 from "../images/Jean-Luc.jpeg";
@@ -7,6 +7,16 @@ import house5 from "../images/Suzette.jpeg";
 import babykaymak from "../images/babykaymak.jpg";
 import kaymak from "../images/kaymak.jpg";
 import Pet from "./Pet";
+
+const FALLBACK = [
+  { name: "BabyKaymak", image: babykaymak, price: "350", location: "Toronto" },
+  { name: "Kaymak", image: kaymak, price: "450", location: "Toronto" },
+  { name: "Jean-Luc", image: house3, price: "300", location: "Toronto" },
+  { name: "Jodie", image: house4, price: "500", location: "Toronto" },
+  { name: "Suzette", image: house5, price: "700", location: "Toronto" },
+  { name: "Hollyhock", image: house1, price: "0", location: "Toronto" },
+  { name: "Horacio", image: house2, price: "200", location: "Toronto" },
+];
 
 const Pets = () => {
   const pets = [
@@ -21,10 +31,11 @@ const Pets = () => {
     { name: "Jodie", image: house4, price: "500" },
     { name: "Suzette", image: house5, price: "700" },
   ];
+  const items = pets;
   return (
     <div className="py-3 sm:py-5">
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6">
-        {pets.map((pet) => (
+        {items.map((pet) => (
           <Pet
             key={pet.image}
             name={pet.name}

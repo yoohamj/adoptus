@@ -1,7 +1,8 @@
 import '../configureAmplify'
 import { getUserProfile } from '../graphql/queries'
 import { createUserProfile, updateUserProfile, createUserActivity } from '../graphql/mutations'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import PhonePicker from '../components/PhonePicker'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 
@@ -11,11 +12,14 @@ export default function Settings() {
   const [user, setUser] = useState(null)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [activeTab, setActiveTab] = useState('profile') // 'profile' | 'privacy'
+  const [usernameStatus, setUsernameStatus] = useState({ valid: true, available: true, checking: false, message: '' })
   const [form, setForm] = useState({
+    username: '',
     firstName: '',
     lastName: '',
-    birthdate: '',
-    phone: '',
+    phoneCode: '',
+    phoneNumber: '',
     address: '',
     city: '',
     state: '',
@@ -25,6 +29,7 @@ export default function Settings() {
   })
   const [profileExists, setProfileExists] = useState(false)
   const [newAvatar, setNewAvatar] = useState(null) // File
+  const fileInputRef = useRef(null)
   const [avatarPreview, setAvatarPreview] = useState('')
   const MAX_AVATAR_MB = 5
 
@@ -36,10 +41,11 @@ export default function Settings() {
         setUser(u)
         const a = u.attributes || {}
         setForm({
+          username: a.preferred_username || a.nickname || u.username || '',
           firstName: a.given_name || '',
           lastName: a.family_name || '',
-          birthdate: a.birthdate || '',
-          phone: a.phone_number || '',
+          phoneCode: (() => { const m = (a.phone_number || '').match(/^\+(\d{1,3})(.*)$/); return m ? `+${m[1]}` : '+1' })(),
+          phoneNumber: (() => { const m = (a.phone_number || '').match(/^\+\d{1,3}(.*)$/); return m ? (m[1] || '') : '' })(),
           address: a.address || '',
           city: '',
           state: '',
@@ -67,7 +73,6 @@ export default function Settings() {
                 // Prefer AppSync profile fields when present
                 firstName: p.name?.split(' ')?.[0] || f.firstName,
                 lastName: p.name?.split(' ')?.slice(1).join(' ') || f.lastName,
-                birthdate: p.birthdate || f.birthdate,
                 city: p.city || f.city,
                 state: p.state || f.state,
                 country: p.country || f.country,
@@ -95,8 +100,49 @@ export default function Settings() {
 
   const onChange = (e) => {
     const { name, value } = e.target
+    if (name === 'username') {
+      const lower = String(value || '').toLowerCase()
+      const cleaned = lower.replace(/[^a-z0-9_]/g, '')
+      setForm((f) => ({ ...f, [name]: cleaned }))
+      setUsernameStatus((s) => ({ ...s, message: '', valid: true }))
+      return
+    }
     setForm((f) => ({ ...f, [name]: value }))
   }
+
+  const validateUsernameSyntax = (u) => /^[A-Za-z0-9_]{3,20}$/.test(u)
+
+  const checkUsernameAvailability = async () => {
+    const u = (form.username || '').trim()
+    if (!u) return
+    if (!validateUsernameSyntax(u)) {
+      setUsernameStatus({ valid: false, available: false, checking: false, message: '3–20 chars, letters/numbers/underscore only.' })
+      return
+    }
+    setUsernameStatus({ valid: true, available: true, checking: true, message: '' })
+    try {
+      const { API, Auth } = await import('aws-amplify')
+      const me = await Auth.currentAuthenticatedUser().catch(() => null)
+      const myId = me?.attributes?.sub
+      const q = /* GraphQL */ `query UserProfilesByUsername($username: String!) { userProfilesByUsername(username: $username) { items { id username } } }`
+      const res = await API.graphql({ query: q, variables: { username: u }, authMode: 'AMAZON_COGNITO_USER_POOLS' })
+      const items = res?.data?.userProfilesByUsername?.items || []
+      const taken = items.some(it => it.id !== myId)
+      setUsernameStatus({ valid: true, available: !taken, checking: false, message: taken ? 'This username is taken.' : 'Username is available.' })
+    } catch (err) {
+      // If index not pushed yet, optimistically allow
+      setUsernameStatus({ valid: true, available: true, checking: false, message: '' })
+    }
+  }
+
+  // Debounced availability check when typing
+  useEffect(() => {
+    const u = (form.username || '').trim()
+    if (!u) return
+    if (!validateUsernameSyntax(u)) return
+    const t = setTimeout(() => { checkUsernameAvailability() }, 400)
+    return () => clearTimeout(t)
+  }, [form.username])
 
   const onAvatarChange = (e) => {
     const file = e.target.files?.[0]
@@ -112,6 +158,17 @@ export default function Settings() {
 
   const save = async () => {
     if (!user) return
+    // Username validation
+    if (form.username) {
+      if (!validateUsernameSyntax(form.username)) {
+        setError('Username must be 3–20 characters and use only letters, numbers, or underscore.')
+        return
+      }
+      if (!usernameStatus.available && !usernameStatus.checking) {
+        setError('This username is already taken. Choose another.')
+        return
+      }
+    }
     setSaving(true)
     setError('')
     setSuccess('')
@@ -136,12 +193,17 @@ export default function Settings() {
         }
       }
 
-      const addressCombined = [form.address, form.city, form.state, form.zip].filter(Boolean).join(', ')
+      const addressCombined = [form.address, form.city, form.state, form.zip, form.country].filter(Boolean).join(', ')
+      const combinedPhone = (() => {
+        const cc = (form.phoneCode || '').trim() || '+1'
+        const num = String(form.phoneNumber || '').replace(/\D/g, '')
+        return num ? `${cc}${num}` : undefined
+      })()
       const attrs = {
+        preferred_username: form.username || undefined,
         given_name: form.firstName || undefined,
         family_name: form.lastName || undefined,
-        birthdate: form.birthdate || undefined,
-        phone_number: form.phone || undefined,
+        phone_number: combinedPhone,
         address: addressCombined || undefined,
         picture: pictureUrl || undefined,
       }
@@ -158,9 +220,9 @@ export default function Settings() {
           const profileInput = {
             id: sub,
             owner: sub,
+            username: form.username || undefined,
             email: user?.attributes?.email || undefined,
             name: [form.firstName, form.lastName].filter(Boolean).join(' ') || undefined,
-            birthdate: form.birthdate || undefined,
             city: form.city || undefined,
             state: form.state || undefined,
             country: form.country || undefined,
@@ -211,15 +273,27 @@ export default function Settings() {
       <Header />
       <main className="flex-1 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <h1 className="text-2xl font-semibold text-gray-800">Settings</h1>
-        <p className="text-gray-600 mt-1">Update your profile information and photo.</p>
+        <p className="text-gray-600 mt-1">Manage your account preferences.</p>
 
         {loading ? (
           <p className="mt-6 text-gray-500">Loading…</p>
         ) : (
-          <div className="mt-6 space-y-6">
-            {error && <div className="text-red-600 text-sm">{error}</div>}
-            {success && <div className="text-green-600 text-sm">{success}</div>}
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6">
+            {/* Sidebar */}
+            <aside className="md:sticky md:top-20 h-max">
+              <nav className="space-y-1">
+                <button onClick={() => setActiveTab('profile')} className={`w-full text-left px-3 py-2 rounded-md ${activeTab==='profile' ? 'bg-blue-50 text-blue-700' : 'hover:bg-gray-50'}`}>Profile</button>
 
+              </nav>
+            </aside>
+
+            {/* Content */}
+            <div className="space-y-6">
+              {error && <div className="text-red-600 text-sm">{error}</div>}
+              {success && <div className="text-green-600 text-sm">{success}</div>}
+
+            {activeTab === 'profile' && (
+            <>
             <section className="flex items-center gap-4">
               <div className="w-20 h-20 rounded-full overflow-hidden bg-gray-100">
                 {avatarPreview ? (
@@ -234,12 +308,29 @@ export default function Settings() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">Profile Photo</label>
-                <input type="file" accept="image/*" onChange={onAvatarChange} className="mt-1 block text-sm" />
-                <p className="text-xs text-gray-500 mt-1">Max {MAX_AVATAR_MB} MB.</p>
+                <input ref={fileInputRef} type="file" accept="image/*" onChange={onAvatarChange} className="hidden" />
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                  className="mt-1 inline-flex items-center px-4 py-2 rounded-md border border-gray-300 text-sm text-gray-800 hover:bg-gray-100"
+                >
+                  Upload Photo
+                </button>
               </div>
             </section>
 
             <section className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-gray-700">Username</label>
+                <div className="flex gap-2">
+                  <input name="username" value={form.username} onChange={onChange} onBlur={checkUsernameAvailability} placeholder="e.g., catlover123" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+                  <button type="button" onClick={checkUsernameAvailability} className="mt-1 px-3 py-2 rounded-md border text-sm">Check</button>
+                </div>
+                {usernameStatus.message && (
+                  <p className={`text-xs mt-1 ${usernameStatus.available ? 'text-green-600' : 'text-red-600'}`}>{usernameStatus.message}</p>
+                )}
+                <p className="text-xs text-gray-500 mt-1">3–20 characters: letters, numbers, underscores.</p>
+              </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700">First Name</label>
                 <input name="firstName" value={form.firstName} onChange={onChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
@@ -248,30 +339,64 @@ export default function Settings() {
                 <label className="block text-sm font-medium text-gray-700">Last Name</label>
                 <input name="lastName" value={form.lastName} onChange={onChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Date of Birth</label>
-                <input type="date" name="birthdate" value={form.birthdate} onChange={onChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
-              </div>
-              <div>
+              
+              <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-gray-700">Phone</label>
-                <input name="phone" value={form.phone} onChange={onChange} placeholder="+11234567890" className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+                <PhonePicker
+                  code={form.phoneCode}
+                  number={form.phoneNumber}
+                  onChange={({ code, number }) => setForm(f => ({ ...f, phoneCode: code, phoneNumber: number }))}
+                  className="mt-1"
+                />
               </div>
             </section>
 
             <section>
               <label className="block text-sm font-medium text-gray-700">Address</label>
               <input name="address" value={form.address} onChange={onChange} className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
-              <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <input name="city" value={form.city} onChange={onChange} placeholder="City" className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
-                <input name="state" value={form.state} onChange={onChange} placeholder="State" className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
-                <input name="zip" value={form.zip} onChange={onChange} placeholder="ZIP" className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+              <div className="mt-3 space-y-3">
+                {/* Row 2: City  State/Province  ZIP/Postal */}
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <input name="city" value={form.city} onChange={onChange} placeholder="City" className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+                  {form.country === "CA" ? (
+                    <select name="state" value={form.state} onChange={onChange} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                      <option value="">Province</option>
+                      <option>AB</option><option>BC</option><option>MB</option><option>NB</option><option>NL</option><option>NS</option><option>NT</option><option>NU</option><option>ON</option><option>PE</option><option>QC</option><option>SK</option><option>YT</option>
+                    </select>
+                  ) : form.country === "US" ? (
+                    <select name="state" value={form.state} onChange={onChange} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                      <option value="">State</option>
+                      <option>AL</option><option>AK</option><option>AZ</option><option>AR</option><option>CA</option><option>CO</option><option>CT</option><option>DE</option><option>FL</option><option>GA</option><option>HI</option><option>IA</option><option>ID</option><option>IL</option><option>IN</option><option>KS</option><option>KY</option><option>LA</option><option>MA</option><option>MD</option><option>ME</option><option>MI</option><option>MN</option><option>MO</option><option>MS</option><option>MT</option><option>NC</option><option>ND</option><option>NE</option><option>NH</option><option>NJ</option><option>NM</option><option>NV</option><option>NY</option><option>OH</option><option>OK</option><option>OR</option><option>PA</option><option>RI</option><option>SC</option><option>SD</option><option>TN</option><option>TX</option><option>UT</option><option>VA</option><option>VT</option><option>WA</option><option>WI</option><option>WV</option><option>WY</option>
+                    </select>
+                  ) : (
+                    <input name="state" value={form.state} onChange={onChange} placeholder="State/Province" className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+                  )}
+                  <input name="zip" value={form.zip} onChange={onChange} placeholder={form.country === "CA" ? "Postal Code" : form.country === "US" ? "ZIP Code" : "Postal/ZIP"} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
+                </div>
+                {/* Row 3: Country */}
+                <div>
+                  <select name="country" value={form.country} onChange={onChange} className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+                    <option value="">Country</option>
+                    <option value="US">United States</option>
+                    <option value="CA">Canada</option>
+                  </select>
+                </div>
               </div>
             </section>
 
             <div className="flex justify-end">
-              <button onClick={save} disabled={saving} className={`px-5 py-2 rounded-md text-white ${saving ? 'bg-blue-300 cursor-wait' : 'bg-blue-600 hover:bg-blue-700'}`}>
+              <button
+                onClick={save}
+                disabled={saving}
+                className={`px-5 py-2 rounded-md border ${saving ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-wait' : 'bg-gray-200 text-gray-900 border-gray-300 hover:bg-gray-300'}`}
+              >
                 {saving ? 'Saving…' : 'Save Changes'}
               </button>
+            </div>
+            </>
+            )}
+
+            
             </div>
           </div>
         )}

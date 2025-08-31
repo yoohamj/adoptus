@@ -26,6 +26,7 @@ type UserProfile @model @auth(rules: [
 ]) {
   id: ID!
   owner: ID!
+  username: String @index(name: "byUsername", queryField: "userProfilesByUsername")
   email: AWSEmail
   name: String
   birthdate: AWSDate
@@ -80,4 +81,46 @@ type Pet @model @auth(rules: [
   photoKeys: [String]
   createdAt: AWSDateTime
   updatedAt: AWSDateTime
+}
+
+
+# Messaging models
+type Conversation @model @auth(rules: [
+  { allow: owner, ownerField: "members", identityClaim: "cognito:sub", operations: [create, read, update, delete] },
+  { allow: groups, groups: ["admin"], operations: [read] }
+]) {
+  id: ID!
+  members: [String!]!
+  petId: ID
+  petName: String
+  lastMessageAt: AWSDateTime
+  lastMessageText: String
+}
+
+type Message @model
+@auth(rules: [
+  { allow: owner, ownerField: "owner", identityClaim: "cognito:sub", operations: [create, read, update, delete] },
+  { allow: owner, ownerField: "participants", identityClaim: "cognito:sub", operations: [read] },
+  { allow: groups, groups: ["admin"], operations: [read] }
+]) {
+  id: ID!
+  conversationID: ID! @index(name: "byConversation", queryField: "messagesByConversation", sortKeyFields: ["createdAt"]) 
+  owner: ID!
+  participants: [String!]!
+  body: String!
+  createdAt: AWSDateTime
+}
+
+
+"""
+Tracks per-user read position for a conversation
+"""
+type ConversationRead @model @auth(rules: [
+  { allow: owner, ownerField: "userId", identityClaim: "cognito:sub", operations: [create, read, update, delete] },
+  { allow: groups, groups: ["admin"], operations: [read] }
+]) {
+  id: ID!
+  conversationID: ID!
+  userId: ID!
+  lastReadAt: AWSDateTime
 }

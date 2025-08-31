@@ -73,7 +73,7 @@ export default function PetRegistrationForm() {
 
   const canProceed = useMemo(() => {
     if (step === 1) {
-      return formData.petType && formData.petName
+      return formData.petType && formData.petName && photos.length > 0
     }
     if (step === 2) {
       return formData.ownerFirstName && formData.ownerEmail
@@ -141,6 +141,12 @@ export default function PetRegistrationForm() {
         return
       }
       setSubmitting(true)
+      if (photos.length === 0) {
+        setPhotoError('At least one photo is required.')
+        setSubmitting(false)
+        setStep(1)
+        return
+      }
       // Validate sizes again before upload (defensive)
       const perFileTooBig = photos.filter((f) => f.size > MAX_PHOTO_MB * 1024 * 1024)
       const totalSize = photos.reduce((a, f) => a + f.size, 0)
@@ -298,11 +304,11 @@ export default function PetRegistrationForm() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">Photos</label>
+            <label className="block text-sm font-medium text-gray-700">Photos <span className="text-red-600">*</span></label>
             <input type="file" accept="image/*" multiple onChange={onPhotosChange} className="mt-1 block w-full text-sm text-gray-700" />
             <p className="mt-1 text-xs text-gray-500">Max {MAX_PHOTO_MB} MB per photo, {MAX_TOTAL_MB} MB total.</p>
-            {photoError && (
-              <p className="mt-1 text-sm text-red-600">{photoError}</p>
+            {(photoError || (showErrors && photos.length === 0)) && (
+              <p className="mt-1 text-sm text-red-600">{photoError || 'At least one photo is required.'}</p>
             )}
             {photoPreviews.length > 0 && (
               <div className="mt-3 grid grid-cols-1 sm:grid-cols-3 gap-2">
