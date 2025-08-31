@@ -23,9 +23,9 @@ function App({ Component, pageProps }: AppProps) {
 
   useEffect(() => {
   const use = async () => {
-    (await require('tw-elements')).default;
-      };
-      use();
+    await import('tw-elements');
+  };
+  use();
     }, []);
   
     return <Component {...pageProps} />;
